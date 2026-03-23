@@ -7,18 +7,18 @@ import { getUnreadCount } from '../api/notificationService';
 const navItems = [
   { section: 'Main Menu' },
   { to: '/dashboard',    icon: '📊', label: 'Dashboard' },
-  { to: '/danisanlar',   icon: '👥', label: 'Clients',           badgeKey: 'clients' },
-  { to: '/randevular',   icon: '📅', label: 'Appointments',           badgeKey: 'notifications' },
+  { to: '/clients',   icon: '👥', label: 'Clients',           badgeKey: 'clients' },
+  { to: '/appointments',   icon: '📅', label: 'Appointments',           badgeKey: 'notifications' },
   { section: 'Clinic' },
-  { to: '/programlar',   icon: '🥗', label: 'Nutrition Programs' },
-  { to: '/olcumler',     icon: '📏', label: 'Measurement Tracking' },
-  { to: '/tarifler',     icon: '📚', label: 'Recipe Library' },
+  { to: '/programs',   icon: '🥗', label: 'Nutrition Programs' },
+  { to: '/measurements',     icon: '📏', label: 'Measurement Tracking' },
+  { to: '/recipes',     icon: '📚', label: 'Recipe Library' },
   { section: 'Business' },
-  { to: '/gelir-gider',  icon: '💰', label: 'Income & Expenses' },
-  { to: '/raporlar',     icon: '📄', label: 'Reports' },
-  { to: '/web-sitem',    icon: '🌐', label: 'My Website' },
+  { to: '/income-expenses',  icon: '💰', label: 'Income & Expenses' },
+  { to: '/reports',     icon: '📄', label: 'Reports' },
+  { to: '/my-website',    icon: '🌐', label: 'My Website' },
   { section: 'System' },
-  { to: '/ayarlar',      icon: '⚙️', label: 'Settings' },
+  { to: '/settings',      icon: '⚙️', label: 'Settings' },
 ];
 
 export default function Sidebar() {

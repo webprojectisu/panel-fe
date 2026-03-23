@@ -33,7 +33,7 @@ export function GelirGider() {
   const chartData = {
     labels: revenueHistory.labels,
     datasets: [
-      { label: 'Gelir', data: revenueHistory.data, backgroundColor: 'rgba(84,138,72,0.7)', borderRadius: 5 },
+      { label: 'Income', data: revenueHistory.data, backgroundColor: 'rgba(84,138,72,0.7)', borderRadius: 5 },
     ],
   };
   const chartOpts = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'top'}, tooltip:{ backgroundColor:'#1e2a1a', callbacks:{ label:ctx=>`${ctx.dataset.label}: ₺${(ctx.raw||0).toLocaleString('tr-TR')}` } } }, scales:{ x:{grid:{display:false},ticks:{color:'#6b7a65',font:{size:11}}}, y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#6b7a65',font:{size:11},callback:v=>'₺'+(v/1000)+'k'}} } };
@@ -192,16 +192,16 @@ export function Raporlar() {
   const lineData = {
     labels: revenueHistory.labels,
     datasets: [
-      { label: 'Gelir (₺)', data: revenueHistory.data, borderColor: '#548a48', backgroundColor: 'rgba(84,138,72,0.1)', fill: true, tension: 0.4 },
+      { label: 'Income (₺)', data: revenueHistory.data, borderColor: '#548a48', backgroundColor: 'rgba(84,138,72,0.1)', fill: true, tension: 0.4 },
     ],
   };
   const lineOpts = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'top'}, tooltip:{backgroundColor:'#1e2a1a'} }, scales:{ x:{grid:{display:false},ticks:{color:'#6b7a65',font:{size:11}}}, y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#6b7a65',font:{size:11}}} } };
 
   const reports = [
-    { title:'Mart 2026 Aylık Raporu', desc:'Danışan analizi, gelir ve randevu istatistikleri', date:'17 Mar 2026', type:'Aylık', icon:'📅' },
-    { title:'Q1 2026 Çeyrek Raporu', desc:'Ocak-Mart dönemi kapsamlı performans raporu', date:'31 Mar 2026', type:'Çeyreklik', icon:'📊' },
-    { title:'Danışan Başarı Raporu', desc:'Hedef başarı oranları ve kilo değişim analizi', date:'17 Mar 2026', type:'Analiz', icon:'🎯' },
-    { title:'Gelir Analiz Raporu', desc:'Mart 2026 gelir-gider detaylı döküm', date:'17 Mar 2026', type:'Finansal', icon:'💰' },
+    { title:'March 2026 Monthly Report', desc:'Main report for March 2026', date:'17 Mar 2026', type:'Aylık', icon:'📅' },
+    { title:'Q1 2026 Quarterly Report', desc:'Main report for Q1 2026', date:'31 Mar 2026', type:'Çeyreklik', icon:'📊' },
+    { title:'Client Success Report', desc:'Main report for client success rates', date:'17 Mar 2026', type:'Analiz', icon:'🎯' },
+    { title:'Income Analysis Report', desc:'Main report for income analysis', date:'17 Mar 2026', type:'Finansal', icon:'💰' },
   ];
 
   return (

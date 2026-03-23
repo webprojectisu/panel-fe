@@ -21,15 +21,15 @@ export default function App() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard"   element={<Dashboard />} />
-              <Route path="/danisanlar"  element={<Danisanlar />} />
-              <Route path="/randevular"  element={<Randevular />} />
-              <Route path="/programlar"  element={<Programlar />} />
-              <Route path="/olcumler"    element={<Olcumler />} />
-              <Route path="/tarifler"    element={<Tarifler />} />
-              <Route path="/gelir-gider" element={<GelirGider />} />
-              <Route path="/raporlar"    element={<Raporlar />} />
-              <Route path="/web-sitem"   element={<WebSitem />} />
-              <Route path="/ayarlar"     element={<Ayarlar />} />
+              <Route path="/clients"  element={<Danisanlar />} />
+              <Route path="/appointments"  element={<Randevular />} />
+              <Route path="/programs"  element={<Programlar />} />
+              <Route path="/measurements"    element={<Olcumler />} />
+              <Route path="/recipes"    element={<Tarifler />} />
+              <Route path="/income-expenses" element={<GelirGider />} />
+              <Route path="/reports"    element={<Raporlar />} />
+              <Route path="/my-website"   element={<WebSitem />} />
+              <Route path="/settings"     element={<Ayarlar />} />
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
