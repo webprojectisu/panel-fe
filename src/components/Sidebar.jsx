@@ -5,20 +5,20 @@ import { getDashboardStats } from '../api/dashboardService';
 import { getUnreadCount } from '../api/notificationService';
 
 const navItems = [
-  { section: 'Ana Menü' },
+  { section: 'Main Menu' },
   { to: '/dashboard',    icon: '📊', label: 'Dashboard' },
-  { to: '/danisanlar',   icon: '👥', label: 'Danışanlar',           badgeKey: 'clients' },
-  { to: '/randevular',   icon: '📅', label: 'Randevular',           badgeKey: 'notifications' },
-  { section: 'Klinik' },
-  { to: '/programlar',   icon: '🥗', label: 'Beslenme Programları' },
-  { to: '/olcumler',     icon: '📏', label: 'Ölçüm Takibi' },
-  { to: '/tarifler',     icon: '📚', label: 'Tarif Kütüphanesi' },
-  { section: 'İşletme' },
-  { to: '/gelir-gider',  icon: '💰', label: 'Gelir & Gider' },
-  { to: '/raporlar',     icon: '📄', label: 'Raporlar' },
-  { to: '/web-sitem',    icon: '🌐', label: 'Web Sitem' },
-  { section: 'Sistem' },
-  { to: '/ayarlar',      icon: '⚙️', label: 'Ayarlar' },
+  { to: '/danisanlar',   icon: '👥', label: 'Clients',           badgeKey: 'clients' },
+  { to: '/randevular',   icon: '📅', label: 'Appointments',           badgeKey: 'notifications' },
+  { section: 'Clinic' },
+  { to: '/programlar',   icon: '🥗', label: 'Nutrition Programs' },
+  { to: '/olcumler',     icon: '📏', label: 'Measurement Tracking' },
+  { to: '/tarifler',     icon: '📚', label: 'Recipe Library' },
+  { section: 'Business' },
+  { to: '/gelir-gider',  icon: '💰', label: 'Income & Expenses' },
+  { to: '/raporlar',     icon: '📄', label: 'Reports' },
+  { to: '/web-sitem',    icon: '🌐', label: 'My Website' },
+  { section: 'System' },
+  { to: '/ayarlar',      icon: '⚙️', label: 'Settings' },
 ];
 
 export default function Sidebar() {

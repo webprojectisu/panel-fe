@@ -35,11 +35,11 @@ export function Programlar() {
   }, [selected?.id]);
 
   const handleCreate = async () => {
-    if (!newProg.client_id) { toast('Lütfen bir danışan seçin', 'error'); return; }
+    if (!newProg.client_id) { toast('Please select a client', 'error'); return; }
     try {
       await createDietPlan({ ...newProg, client_id: parseInt(newProg.client_id) });
       refetch();
-      toast('Program eklendi ✅', 'success');
+      toast('Program added ✅', 'success');
       setShowAdd(false);
       setNewProg({ title: '', description: '', status: 'draft', client_id: '' });
     } catch (err) {
@@ -52,16 +52,16 @@ export function Programlar() {
 
   return (
     <AppLayout>
-      <Topbar title="Beslenme Programları" subtitle={`${(plans || []).length} aktif program`}
-        actions={<button onClick={() => setShowAdd(true)} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ Yeni Program</button>}
+      <Topbar title="Nutrition Programs" subtitle={`${(plans || []).length} active programs`}
+        actions={<button onClick={() => setShowAdd(true)} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ New Program</button>}
       />
       <div style={{display:'flex',flex:1,overflow:'hidden'}}>
         {/* Program list */}
         <div style={{width:280,flexShrink:0,background:'var(--surface)',borderRight:'1px solid var(--border-light)',overflowY:'auto'}}>
           <div style={{padding:16}}>
-            <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:12,padding:'0 4px'}}>Programlar</div>
-            {isLoading && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Yükleniyor...</div>}
-            {!isLoading && (plans || []).length === 0 && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Henüz program eklenmedi.</div>}
+            <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:12,padding:'0 4px'}}>Programs</div>
+            {isLoading && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Loading...</div>}
+            {!isLoading && (plans || []).length === 0 && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>No programs added yet.</div>}
             {(plans || []).map(p => (
               <div key={p.id} onClick={() => setSelected(p)}
                 style={{padding:'14px 16px',borderRadius:'var(--radius-md)',cursor:'pointer',marginBottom:6,border:`1px solid ${selected?.id===p.id?'var(--sage-200)':'var(--border-light)'}`,background:selected?.id===p.id?'var(--sage-50)':'white',transition:'all 0.15s'}}
@@ -94,7 +94,7 @@ export function Programlar() {
 
                 {/* Info cards */}
                 <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:14,marginBottom:24}}>
-                  {[['📅',selected.start_date||'—','Başlangıç'],['📅',selected.end_date||'—','Bitiş'],['🔖',selected.status||'—','Durum']].map(([ic,v,l])=>(
+                  {[['📅',selected.start_date||'—','Start'],['📅',selected.end_date||'—','End'],['🔖',selected.status||'—','Status']].map(([ic,v,l])=>(
                     <div key={l} style={{background:'white',border:'1px solid var(--border-light)',borderRadius:'var(--radius-lg)',padding:'18px',textAlign:'center'}}>
                       <div style={{width:42,height:42,background:'var(--sage-100)',borderRadius:'var(--radius-md)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,margin:'0 auto 10px'}}>{ic}</div>
                       <div style={{fontFamily:'var(--font-display)',fontSize:18,fontWeight:600,marginBottom:2}}>{v}</div>
@@ -105,9 +105,9 @@ export function Programlar() {
 
                 {/* Meals */}
                 <div style={{background:'white',border:'1px solid var(--border-light)',borderRadius:'var(--radius-lg)',padding:20}}>
-                  <div style={{fontSize:14,fontWeight:600,marginBottom:16}}>Günlük Öğün Planı</div>
+                  <div style={{fontSize:14,fontWeight:600,marginBottom:16}}>Daily Meal Plan</div>
                   {!selectedDetail ? (
-                    <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Yükleniyor...</div>
+                    <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Loading...</div>
                   ) : (selectedDetail.meals || []).length > 0 ? (
                     <div style={{display:'flex',flexDirection:'column',gap:10}}>
                       {(selectedDetail.meals || []).map((m,i)=>(
@@ -119,14 +119,14 @@ export function Programlar() {
                       ))}
                     </div>
                   ) : (
-                    <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Bu program için öğün tanımlanmamış.</div>
+                    <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>No meals defined for this program.</div>
                   )}
                 </div>
 
                 {/* Assigned client */}
                 {assignedClient && (
                   <div style={{background:'white',border:'1px solid var(--border-light)',borderRadius:'var(--radius-lg)',padding:20,marginTop:16}}>
-                    <div style={{fontSize:14,fontWeight:600,marginBottom:14}}>Bu Programdaki Danışan</div>
+                    <div style={{fontSize:14,fontWeight:600,marginBottom:14}}>Client in This Program</div>
                     <div style={{display:'flex',alignItems:'center',gap:12,padding:'10px',background:'var(--sage-50)',borderRadius:'var(--radius-md)'}}>
                       <div style={{width:34,height:34,borderRadius:'50%',background:COLOR_PALETTE[assignedClient.id % 8],display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,flexShrink:0,color:'white'}}>
                         {(assignedClient.full_name||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('')}
@@ -140,9 +140,9 @@ export function Programlar() {
                 )}
               </div>
               <div style={{display:'flex',gap:10}}>
-                <button onClick={()=>toast('Program düzenleme modu','info')} style={{padding:'10px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>✏️ Programı Düzenle</button>
-                <button onClick={()=>toast('Program PDF olarak indiriliyor...','info')} style={{padding:'10px 20px',borderRadius:99,background:'white',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>📄 PDF İndir</button>
-                <button onClick={()=>toast('Program kopyalandı','success')} style={{padding:'10px 20px',borderRadius:99,background:'white',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>📋 Kopyala</button>
+                <button onClick={()=>toast('Program editing mode','info')} style={{padding:'10px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>✏️ Edit Program</button>
+                <button onClick={()=>toast('Downloading program as PDF...','info')} style={{padding:'10px 20px',borderRadius:99,background:'white',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>📄 Download PDF</button>
+                <button onClick={()=>toast('Program copied','success')} style={{padding:'10px 20px',borderRadius:99,background:'white',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>📋 Copy</button>
               </div>
             </>
           )}
@@ -154,34 +154,34 @@ export function Programlar() {
         <div onClick={e=>{if(e.target===e.currentTarget)setShowAdd(false);}} style={{position:'fixed',inset:0,background:'rgba(30,42,26,0.5)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
           <div style={{background:'white',borderRadius:'var(--radius-xl)',padding:32,width:460,maxWidth:'95vw',boxShadow:'var(--shadow-xl)',animation:'scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1)'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>Yeni Program</span>
+              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>New Program</span>
               <button onClick={()=>setShowAdd(false)} style={{width:32,height:32,borderRadius:'50%',background:'var(--sage-50)',border:'none',cursor:'pointer'}}>✕</button>
             </div>
-            {[['Program Adı','title','text'],['Açıklama','description','text']].map(([l,k,t])=>(
+            {[['Program Name','title','text'],['Description','description','text']].map(([l,k,t])=>(
               <div key={k} style={{marginBottom:14}}>
                 <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>{l}</label>
                 <input type={t} value={newProg[k]} onChange={e=>setNewProg(p=>({...p,[k]:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
               </div>
             ))}
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Danışan</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Client</label>
               <select value={newProg.client_id} onChange={e=>setNewProg(p=>({...p,client_id:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none'}}>
-                <option value="">Seçiniz...</option>
+                <option value="">Select...</option>
                 {(clientList||[]).map(c=><option key={c.id} value={c.id}>{c.full_name}</option>)}
               </select>
             </div>
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Durum</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Status</label>
               <select value={newProg.status} onChange={e=>setNewProg(p=>({...p,status:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none'}}>
-                <option value="draft">Taslak</option>
-                <option value="active">Aktif</option>
-                <option value="paused">Duraklatıldı</option>
-                <option value="completed">Tamamlandı</option>
+                <option value="draft">Draft</option>
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="completed">Completed</option>
               </select>
             </div>
             <div style={{display:'flex',justifyContent:'flex-end',gap:10,marginTop:20,paddingTop:16,borderTop:'1px solid var(--border-light)'}}>
-              <button onClick={()=>setShowAdd(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>İptal</button>
-              <button onClick={handleCreate} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Kaydet</button>
+              <button onClick={()=>setShowAdd(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>Cancel</button>
+              <button onClick={handleCreate} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Save</button>
             </div>
           </div>
         </div>
@@ -236,7 +236,7 @@ export function Olcumler() {
       if (newMeas.notes) payload.notes = newMeas.notes;
       await addMeasurement(selectedClient.id, payload);
       await fetchMeasurements(selectedClient.id);
-      toast('Ölçüm kaydedildi ✅', 'success');
+      toast('Measurement saved ✅', 'success');
       setShowAdd(false);
       setNewMeas({ weight_kg:'', height_cm:'', body_fat_percentage:'', waist_cm:'', hip_cm:'', chest_cm:'', recorded_at:'', notes:'' });
     } catch (err) {
@@ -248,23 +248,23 @@ export function Olcumler() {
   const chartData = {
     labels: measurements.map(m => {
       const d = new Date(m.recorded_at);
-      return `${d.getDate()} ${['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'][d.getMonth()]}`;
+      return `${d.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}`;
     }),
-    datasets:[{ label:'Kilo (kg)', data:measurements.map(m=>m.weight_kg), borderColor:'var(--primary)', backgroundColor:'rgba(84,138,72,0.1)', fill:true, tension:0.4, pointRadius:5, pointBackgroundColor:'var(--primary)' }],
+    datasets:[{ label:'Weight (kg)', data:measurements.map(m=>m.weight_kg), borderColor:'var(--primary)', backgroundColor:'rgba(84,138,72,0.1)', fill:true, tension:0.4, pointRadius:5, pointBackgroundColor:'var(--primary)' }],
   };
   const chartOpts = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#1e2a1a', callbacks:{ label:ctx=>` ${ctx.raw} kg` } } }, scales:{ x:{grid:{display:false},ticks:{color:'#6b7a65',font:{size:11}}}, y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#6b7a65',font:{size:11},callback:v=>v+' kg'}} } };
 
   return (
     <AppLayout>
-      <Topbar title="Ölçüm Takibi" subtitle="Danışan ölçümlerini takip edin"
-        actions={<button onClick={()=>setShowAdd(true)} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ Ölçüm Ekle</button>}
+      <Topbar title="Measurement Tracking" subtitle="Track client measurements"
+        actions={<button onClick={()=>setShowAdd(true)} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ Add Measurement</button>}
       />
       <div style={{display:'flex',flex:1,overflow:'hidden'}}>
         {/* Client selector */}
         <div style={{width:260,flexShrink:0,background:'var(--surface)',borderRight:'1px solid var(--border-light)',overflowY:'auto',padding:12}}>
-          <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10,padding:'4px 8px'}}>Danışanlar</div>
-          {clientsLoading && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Yükleniyor...</div>}
-          {!clientsLoading && clients.length === 0 && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Danışan bulunamadı.</div>}
+          <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10,padding:'4px 8px'}}>Clients</div>
+          {clientsLoading && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>Loading...</div>}
+          {!clientsLoading && clients.length === 0 && <div style={{textAlign:'center',padding:'20px',color:'var(--muted)'}}>No clients found.</div>}
           {clients.map(c=>(
             <div key={c.id} onClick={()=>setSelectedClient(c)}
               style={{display:'flex',alignItems:'center',gap:10,padding:'10px 12px',borderRadius:'var(--radius-md)',cursor:'pointer',marginBottom:4,background:selectedClient?.id===c.id?'var(--sage-50)':'transparent',border:`1px solid ${selectedClient?.id===c.id?'var(--sage-200)':'transparent'}`,transition:'all 0.15s'}}
@@ -297,12 +297,12 @@ export function Olcumler() {
                   : null;
                 const waterMl = lm?.weight_kg ? Math.round(lm.weight_kg * 0.033 * 1000)+' ml' : '—';
                 const kpiRows = [
-                  [lm?.weight_kg ? lm.weight_kg+' kg' : '—','Kilo','var(--sage-100)','⚖️'],
+                  [lm?.weight_kg ? lm.weight_kg+' kg' : '—','Weight','var(--sage-100)','⚖️'],
                   [lm?.bmi ? Number(lm.bmi).toFixed(1) : '—','BMI','var(--bej-100)','📊'],
-                  [lm?.body_fat_percentage ? lm.body_fat_percentage+'%' : '—','Yağ %','#ecfdf5','💧'],
-                  [lm?.waist_cm ? lm.waist_cm+' cm' : '—','Bel','#e2f0f8','📐'],
-                  [lm?.height_cm ? lm.height_cm+' cm' : '—','Boy','var(--sage-50)','📏'],
-                  [waterMl,'Su İhtiyacı','var(--bej-100)','🫧'],
+                  [lm?.body_fat_percentage ? lm.body_fat_percentage+'%' : '—','Body Fat %','#ecfdf5','💧'],
+                  [lm?.waist_cm ? lm.waist_cm+' cm' : '—','Waist','#e2f0f8','📐'],
+                  [lm?.height_cm ? lm.height_cm+' cm' : '—','Height','var(--sage-50)','📏'],
+                  [waterMl,'Water Needs','var(--bej-100)','�'],
                 ];
                 return (
               <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:12,marginBottom:24}}>
@@ -317,12 +317,12 @@ export function Olcumler() {
                 );
               })()}
 
-              {measLoading && <div style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Yükleniyor...</div>}
+              {measLoading && <div style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Loading...</div>}
 
               {/* Chart */}
               {!measLoading && measurements.length > 0 && (
                 <div style={{background:'white',border:'1px solid var(--border-light)',borderRadius:'var(--radius-lg)',padding:20,marginBottom:20}}>
-                  <div style={{fontSize:14,fontWeight:600,marginBottom:16}}>Kilo Değişimi</div>
+                  <div style={{fontSize:14,fontWeight:600,marginBottom:16}}>Weight Change</div>
                   <div style={{height:200}}><Line data={chartData} options={chartOpts}/></div>
                 </div>
               )}
@@ -331,15 +331,15 @@ export function Olcumler() {
               {!measLoading && measurements.length > 0 && (
                 <div style={{background:'white',border:'1px solid var(--border-light)',borderRadius:'var(--radius-lg)',overflow:'hidden'}}>
                   <div style={{padding:'14px 20px',borderBottom:'1px solid var(--border-light)',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-                    <span style={{fontSize:14,fontWeight:600}}>Ölçüm Geçmişi</span>
+                    <span style={{fontSize:14,fontWeight:600}}>Measurement History</span>
                   </div>
                   <table style={{width:'100%',borderCollapse:'collapse'}}>
-                    <thead><tr>{['Tarih','Kilo','BMI','Yağ %','Bel','Kalça','Göğüs'].map(h=><th key={h} style={{fontSize:11,fontWeight:600,padding:'10px 16px',textAlign:'left',background:'var(--sage-50)',color:'var(--muted)'}}>{h}</th>)}</tr></thead>
+                    <thead><tr>{['Date','Weight','BMI','Body Fat %','Waist','Hip','Chest'].map(h=><th key={h} style={{fontSize:11,fontWeight:600,padding:'10px 16px',textAlign:'left',background:'var(--sage-50)',color:'var(--muted)'}}>{h}</th>)}</tr></thead>
                     <tbody>
                       {measurements.map((m,i)=>(
                         <tr key={m.id||i} onMouseEnter={e=>e.currentTarget.style.background='var(--sage-50)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                           {[
-                            new Date(m.recorded_at).toLocaleDateString('tr-TR'),
+                            new Date(m.recorded_at).toLocaleDateString('en-US'),
                             m.weight_kg ? m.weight_kg+' kg' : '—',
                             m.bmi || '—',
                             m.body_fat_percentage ? m.body_fat_percentage+'%' : '—',
@@ -359,9 +359,9 @@ export function Olcumler() {
               {!measLoading && measurements.length === 0 && (
                 <div style={{background:'white',border:'2px dashed var(--border)',borderRadius:'var(--radius-lg)',padding:60,textAlign:'center'}}>
                   <div style={{fontSize:40,marginBottom:12}}>📏</div>
-                  <div style={{fontSize:16,fontWeight:600,marginBottom:8}}>Henüz ölçüm yok</div>
-                  <div style={{fontSize:14,color:'var(--muted)',marginBottom:20}}>Bu danışan için ilk ölçümü ekleyin.</div>
-                  <button onClick={()=>setShowAdd(true)} style={{padding:'10px 24px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:14,fontWeight:500,cursor:'pointer'}}>➕ İlk Ölçümü Ekle</button>
+                  <div style={{fontSize:16,fontWeight:600,marginBottom:8}}>No measurements yet</div>
+                  <div style={{fontSize:14,color:'var(--muted)',marginBottom:20}}>Add the first measurement for this client.</div>
+                  <button onClick={()=>setShowAdd(true)} style={{padding:'10px 24px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:14,fontWeight:500,cursor:'pointer'}}>➕ Add First Measurement</button>
                 </div>
               )}
             </>
@@ -374,18 +374,18 @@ export function Olcumler() {
         <div onClick={e=>{if(e.target===e.currentTarget)setShowAdd(false);}} style={{position:'fixed',inset:0,background:'rgba(30,42,26,0.5)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
           <div style={{background:'white',borderRadius:'var(--radius-xl)',padding:32,width:460,maxWidth:'95vw',boxShadow:'var(--shadow-xl)',animation:'scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1)'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>Yeni Ölçüm</span>
+              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>New Measurement</span>
               <button onClick={()=>setShowAdd(false)} style={{width:32,height:32,borderRadius:'50%',background:'var(--sage-50)',border:'none',cursor:'pointer'}}>✕</button>
             </div>
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Danışan</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Client</label>
               <select value={selectedClient?.id || ''} onChange={e=>{const c=clients.find(x=>x.id===parseInt(e.target.value));if(c)setSelectedClient(c);}} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none'}}>
-                <option value="">Seçiniz...</option>
+                <option value="">Select...</option>
                 {clients.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-              {[['Kilo (kg)','weight_kg'],['Boy (cm)','height_cm'],['Vücut Yağ (%)','body_fat_percentage'],['Bel Çevresi (cm)','waist_cm'],['Kalça (cm)','hip_cm'],['Göğüs (cm)','chest_cm']].map(([l,k])=>(
+              {[['Weight (kg)','weight_kg'],['Height (cm)','height_cm'],['Body Fat (%)','body_fat_percentage'],['Waist (cm)','waist_cm'],['Hip (cm)','hip_cm'],['Chest (cm)','chest_cm']].map(([l,k])=>(
                 <div key={k} style={{marginBottom:12}}>
                   <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>{l}</label>
                   <input type="number" value={newMeas[k]} onChange={e=>setNewMeas(p=>({...p,[k]:e.target.value}))} step="0.1" style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
@@ -393,16 +393,16 @@ export function Olcumler() {
               ))}
             </div>
             <div style={{marginBottom:12}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Tarih</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Date</label>
               <input type="date" value={newMeas.recorded_at} onChange={e=>setNewMeas(p=>({...p,recorded_at:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
             </div>
             <div style={{marginBottom:12}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Notlar</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Notes</label>
               <input type="text" value={newMeas.notes} onChange={e=>setNewMeas(p=>({...p,notes:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
             </div>
             <div style={{display:'flex',justifyContent:'flex-end',gap:10,marginTop:20,paddingTop:16,borderTop:'1px solid var(--border-light)'}}>
-              <button onClick={()=>setShowAdd(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>İptal</button>
-              <button onClick={handleAddMeasurement} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Kaydet</button>
+              <button onClick={()=>setShowAdd(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>Cancel</button>
+              <button onClick={handleAddMeasurement} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Save</button>
             </div>
           </div>
         </div>
@@ -433,7 +433,7 @@ export function Tarifler() {
       if (newRecipe.calories) payload.calories = parseFloat(newRecipe.calories);
       await createRecipe(payload);
       refetch();
-      toast('Tarif eklendi ✅', 'success');
+      toast('Recipe added ✅', 'success');
       setShowAdd(false);
       setNewRecipe({ title:'', description:'', instructions:'', preparation_time_minutes:'', calories:'' });
     } catch (err) {
@@ -444,20 +444,20 @@ export function Tarifler() {
 
   return (
     <AppLayout>
-      <Topbar title="Tarif Kütüphanesi" subtitle={`${(recipes || []).length} sağlıklı tarif`}
-        actions={<button onClick={()=>setShowAdd(true)} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ Tarif Ekle</button>}
+      <Topbar title="Recipe Library" subtitle={`${(recipes || []).length} healthy recipes`}
+        actions={<button onClick={()=>setShowAdd(true)} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ Add Recipe</button>}
       />
       <div style={{padding:28,flex:1}}>
         {/* Search */}
         <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
           <div style={{display:'flex',alignItems:'center',gap:8,background:'white',border:'1px solid var(--border)',borderRadius:99,padding:'9px 18px',flex:1,minWidth:200,maxWidth:320}}>
             <span>🔍</span>
-            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Tarif ara..." style={{border:'none',outline:'none',fontSize:14,background:'transparent',width:'100%'}}/>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search recipes..." style={{border:'none',outline:'none',fontSize:14,background:'transparent',width:'100%'}}/>
           </div>
         </div>
 
-        {isLoading && <div style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Yükleniyor...</div>}
-        {!isLoading && (recipes||[]).length === 0 && <div style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Henüz tarif eklenmedi.</div>}
+        {isLoading && <div style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Loading...</div>}
+        {!isLoading && (recipes||[]).length === 0 && <div style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>No recipes added yet.</div>}
 
         {/* Grid */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',gap:16}}>
@@ -468,7 +468,7 @@ export function Tarifler() {
               <div style={{fontSize:14,fontWeight:600,marginBottom:4}}>{r.title}</div>
               <div style={{fontSize:11,color:'var(--muted)',marginBottom:12}}>{r.description ? r.description.slice(0,60)+(r.description.length>60?'...':'') : ''}</div>
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:6,marginBottom:12}}>
-                {[[r.calories ? '🔥 '+r.calories : '—','kcal'],[r.preparation_time_minutes ? '⏱ '+r.preparation_time_minutes+' dk' : '—','hazırlık']].map(([v,l])=>(
+                {[[r.calories ? '🔥 '+r.calories : '—','kcal'],[r.preparation_time_minutes ? '⏱ '+r.preparation_time_minutes+' min' : '—','prep']].map(([v,l])=>(
                   <div key={l} style={{background:'var(--sage-50)',borderRadius:'var(--radius-sm)',padding:'5px 8px',fontSize:11,textAlign:'center'}}>
                     <div style={{fontWeight:600}}>{v}</div><div style={{color:'var(--muted)'}}>{l}</div>
                   </div>
@@ -476,13 +476,13 @@ export function Tarifler() {
               </div>
               {selected?.id===r.id&&(
                 <div style={{marginTop:12,paddingTop:12,borderTop:'1px solid var(--border-light)',display:'flex',gap:6}}>
-                  <button onClick={e=>{e.stopPropagation();toast('Tarif danışana gönderildi ✅','success');}} style={{flex:1,padding:'7px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:12,fontWeight:500,cursor:'pointer'}}>Danışana Gönder</button>
-                  <button onClick={e=>{e.stopPropagation();toast('Programa eklendi ✅','success');}} style={{flex:1,padding:'7px',borderRadius:99,background:'white',border:'1px solid var(--border)',fontSize:12,fontWeight:500,cursor:'pointer'}}>Programa Ekle</button>
+                  <button onClick={e=>{e.stopPropagation();toast('Recipe sent to client ✅','success');}} style={{flex:1,padding:'7px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:12,fontWeight:500,cursor:'pointer'}}>Send to Client</button>
+                  <button onClick={e=>{e.stopPropagation();toast('Added to program ✅','success');}} style={{flex:1,padding:'7px',borderRadius:99,background:'white',border:'1px solid var(--border)',fontSize:12,fontWeight:500,cursor:'pointer'}}>Add to Program</button>
                 </div>
               )}
             </div>
           ))}
-          {!isLoading && filtered.length===0&&(recipes||[]).length>0&&<div style={{gridColumn:'1/-1',textAlign:'center',padding:60,color:'var(--muted)',fontSize:15}}>Tarif bulunamadı.</div>}
+          {!isLoading && filtered.length===0&&(recipes||[]).length>0&&<div style={{gridColumn:'1/-1',textAlign:'center',padding:60,color:'var(--muted)',fontSize:15}}>No recipes found.</div>}
         </div>
       </div>
 
@@ -491,22 +491,22 @@ export function Tarifler() {
         <div onClick={e=>{if(e.target===e.currentTarget)setShowAdd(false);}} style={{position:'fixed',inset:0,background:'rgba(30,42,26,0.5)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
           <div style={{background:'white',borderRadius:'var(--radius-xl)',padding:32,width:460,maxWidth:'95vw',maxHeight:'90vh',overflowY:'auto',boxShadow:'var(--shadow-xl)',animation:'scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1)'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>Yeni Tarif</span>
+              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>New Recipe</span>
               <button onClick={()=>setShowAdd(false)} style={{width:32,height:32,borderRadius:'50%',background:'var(--sage-50)',border:'none',cursor:'pointer'}}>✕</button>
             </div>
-            {[['Tarif Adı','title','text'],['Açıklama','description','text'],['Hazırlık Süresi (dk)','preparation_time_minutes','number'],['Kalori (kcal)','calories','number']].map(([l,k,t])=>(
+            {[['Recipe Name','title','text'],['Description','description','text'],['Prep Time (min)','preparation_time_minutes','number'],['Calories (kcal)','calories','number']].map(([l,k,t])=>(
               <div key={k} style={{marginBottom:14}}>
                 <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>{l}</label>
                 <input type={t} value={newRecipe[k]} onChange={e=>setNewRecipe(p=>({...p,[k]:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
               </div>
             ))}
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Yapılış</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Instructions</label>
               <textarea value={newRecipe.instructions} onChange={e=>setNewRecipe(p=>({...p,instructions:e.target.value}))} rows={3} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',resize:'vertical',fontFamily:'var(--font-body)',boxSizing:'border-box'}}/>
             </div>
             <div style={{display:'flex',justifyContent:'flex-end',gap:10,marginTop:20,paddingTop:16,borderTop:'1px solid var(--border-light)'}}>
-              <button onClick={()=>setShowAdd(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>İptal</button>
-              <button onClick={handleCreate} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Kaydet</button>
+              <button onClick={()=>setShowAdd(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>Cancel</button>
+              <button onClick={handleCreate} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Save</button>
             </div>
           </div>
         </div>

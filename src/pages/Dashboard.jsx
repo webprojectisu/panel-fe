@@ -46,12 +46,12 @@ export default function Dashboard() {
   const { data: stats, isLoading, error, refetch } = useApi(getDashboardStats, []);
 
   const [tasks, setTasks] = useState([
-    { id:1, text:'Ayşe Yılmaz - program güncelle', done:true, priority:'Tamamlandı', pc:'badge-bej' },
-    { id:2, text:'Mert Kaya - anamnez formu hazırla', done:false, priority:'Yüksek', pc:'badge-warn' },
-    { id:3, text:'Haftalık ölçüm raporlarını gönder', done:false, priority:'Normal', pc:'badge-info' },
-    { id:4, text:'Yeni tarif kütüphanesi güncelle', done:false, priority:'Düşük', pc:'badge-green' },
-    { id:5, text:'Mart faturalarını kontrol et', done:true, priority:'Tamamlandı', pc:'badge-bej' },
-    { id:6, text:'Selin Çelik - ölçüm takibi gir', done:false, priority:'Yüksek', pc:'badge-warn' },
+    { id:1, text:'Ayşe Yılmaz - update program', done:true, priority:'Completed', pc:'badge-bej' },
+    { id:2, text:'Mert Kaya - prepare anamnesis form', done:false, priority:'High', pc:'badge-warn' },
+    { id:3, text:'Send weekly measurement reports', done:false, priority:'Normal', pc:'badge-info' },
+    { id:4, text:'Update new recipe library', done:false, priority:'Low', pc:'badge-green' },
+    { id:5, text:'Check March invoices', done:true, priority:'Completed', pc:'badge-bej' },
+    { id:6, text:'Selin Çelik - enter measurement tracking', done:false, priority:'High', pc:'badge-warn' },
   ]);
 
   const todayAppts = stats?.today_appointments || [];
@@ -61,7 +61,7 @@ export default function Dashboard() {
 
   const barData = {
     labels: revenueChartData.labels,
-    datasets: [{ label:'Gelir (₺)', data: revenueChartData.data, backgroundColor: revenueChartData.data.map((_,i) => i === revenueChartData.data.length-1 ? '#3e6b34':'#ccdfc5'), borderRadius:6 }],
+    datasets: [{ label:'Revenue (₺)', data: revenueChartData.data, backgroundColor: revenueChartData.data.map((_,i) => i === revenueChartData.data.length-1 ? '#3e6b34':'#ccdfc5'), borderRadius:6 }],
   };
   const barOpts = {
     responsive:true, maintainAspectRatio:false,
@@ -74,48 +74,48 @@ export default function Dashboard() {
     labels: donutChartData.labels,
     datasets:[{ data:donutChartData.data, backgroundColor:['#548a48','#b8924a','#7aaa6d','#ccdfc5'], borderWidth:0, hoverOffset:6 }],
   };
-  const donutOpts = { responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#1e2a1a', callbacks:{ label: ctx => ` ${ctx.label}: ${ctx.raw} danışan` } } } };
+  const donutOpts = { responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#1e2a1a', callbacks:{ label: ctx => ` ${ctx.label}: ${ctx.raw} clients` } } } };
 
-  const statusColors = { onaylı:'var(--success)', bekliyor:'var(--warning)', iptal:'var(--danger)' };
+  const statusColors = { confirmed:'var(--success)', pending:'var(--warning)', cancelled:'var(--danger)' };
   const badgeStyle = { green:{background:'var(--sage-100)',color:'var(--sage-700)'}, warn:{background:'#fef3e2',color:'var(--warning)'}, info:{background:'#e2f0f8',color:'var(--info)'}, bej:{background:'var(--bej-100)',color:'var(--bej-700)'} };
 
   return (
     <AppLayout>
-      <Topbar title="Dashboard" subtitle="Salı, 17 Mart 2026"
+      <Topbar title="Dashboard" subtitle="Tuesday, March 17, 2026"
         actions={<>
-          <button onClick={()=>toast('Excel raporu hazırlanıyor...','info')} style={{padding:'8px 16px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>📥 Rapor İndir</button>
-          <Link to="/danisanlar" style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',fontSize:13,fontWeight:500}}>➕ Yeni Danışan</Link>
+          <button onClick={()=>toast('Preparing Excel report...','info')} style={{padding:'8px 16px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>� Download Report</button>
+          <Link to="/clients" style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',fontSize:13,fontWeight:500}}>➕ New Client</Link>
         </>}
       />
       <div style={S.body}>
         {error && (
           <div style={{background:'#fee2e2',color:'#dc2626',padding:'12px 16px',borderRadius:'8px',marginBottom:'16px'}}>
-            Veriler yüklenemedi: {error} <button onClick={refetch}>Tekrar dene</button>
+            Failed to load data: {error} <button onClick={refetch}>Retry</button>
           </div>
         )}
 
         {/* Greeting */}
         <div style={S.greeting}>
-          <div><h1 style={S.h1}>Merhaba, Derya Hanım 👋</h1><p style={{fontSize:14,color:'var(--muted)'}}>Bugün 5 randevunuz var. Son 30 günde 8 yeni danışan eklediniz.</p></div>
+          <div><h1 style={S.h1}>Hello, Derya 👋</h1><p style={{fontSize:14,color:'var(--muted)'}}>You have 5 appointments today. You added 8 new clients in the last 30 days.</p></div>
         </div>
 
         {/* KPI */}
         <div style={S.kpiGrid}>
-          <KpiCard icon="👥" iconBg="var(--sage-100)" value={stats?.active_clients ?? '—'} label="Aktif Danışan" sub="Bu ay 6 yeni kayıt" trend="↑ +6" trendUp />
-          <KpiCard icon="📅" iconBg="var(--bej-100)" value={stats?.weekly_appointments ?? '—'} label="Bu Haftaki Randevu" sub="5 bugün, 7 hafta içi" trend="↑ +2" trendUp />
-          <KpiCard icon="💰" iconBg="#ecfdf5" value={stats?.monthly_revenue ? stats.monthly_revenue.toLocaleString('tr-TR') + ' ₺' : '—'} label="Aylık Gelir" sub="Geçen aya göre +₺3.6k" trend="↑ %18" trendUp />
-          <KpiCard icon="📊" iconBg="#e2f0f8" value={stats?.success_rate ? stats.success_rate + '%' : '—'} label="Hedef Başarı Oranı" sub="45 / 48 danışan hedefe ulaştı" trend="↑ %4" trendUp />
+          <KpiCard icon="👥" iconBg="var(--sage-100)" value={stats?.active_clients ?? '—'} label="Active Clients" sub="6 new registrations this month" trend="↑ +6" trendUp />
+          <KpiCard icon="📅" iconBg="var(--bej-100)" value={stats?.weekly_appointments ?? '—'} label="This Week's Appointments" sub="5 today, 7 this week" trend="↑ +2" trendUp />
+          <KpiCard icon="💰" iconBg="#ecfdf5" value={stats?.monthly_revenue ? stats.monthly_revenue.toLocaleString('tr-TR') + ' ₺' : '—'} label="Monthly Revenue" sub="+₺3.6k vs last month" trend="↑ %18" trendUp />
+          <KpiCard icon="📊" iconBg="#e2f0f8" value={stats?.success_rate ? stats.success_rate + '%' : '—'} label="Goal Success Rate" sub="45 / 48 clients reached goal" trend="↑ %4" trendUp />
         </div>
 
         {/* Charts */}
         <div style={S.chartsRow}>
           <div style={S.chartCard}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20}}>
-              <div><div style={{fontSize:15,fontWeight:600}}>Gelir Analizi</div><div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Son 7 dönemin gelir grafiği</div></div>
+              <div><div style={{fontSize:15,fontWeight:600}}>Revenue Analysis</div><div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Revenue chart for last 7 periods</div></div>
               <div style={{display:'flex',gap:4}}>
                 {['monthly','weekly'].map(t=>(
                   <button key={t} onClick={()=>setRevenueTab(t)} style={{padding:'5px 12px',borderRadius:99,fontSize:12,fontWeight:500,cursor:'pointer',border:'1px solid',borderColor:revenueTab===t?'var(--sage-200)':'transparent',background:revenueTab===t?'var(--sage-100)':'transparent',color:revenueTab===t?'var(--primary)':'var(--muted)'}}>
-                    {t==='monthly'?'Aylık':'Haftalık'}
+                    {t==='monthly'?'Monthly':'Weekly'}
                   </button>
                 ))}
               </div>
@@ -123,10 +123,10 @@ export default function Dashboard() {
             <div style={{height:220}}><Bar data={barData} options={barOpts} /></div>
           </div>
           <div style={S.chartCard}>
-            <div style={{marginBottom:20}}><div style={{fontSize:15,fontWeight:600}}>Danışan Dağılımı</div><div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>Programa göre</div></div>
+            <div style={{marginBottom:20}}><div style={{fontSize:15,fontWeight:600}}>Client Distribution</div><div style={{fontSize:12,color:'var(--muted)',marginTop:2}}>By program</div></div>
             <div style={{height:150}}><Doughnut data={donutData} options={donutOpts} /></div>
             <div style={{marginTop:16,display:'flex',flexDirection:'column',gap:8}}>
-              {[['#548a48','Kilo Verme'],['#b8924a','Kilo Alma'],['#7aaa6d','Sağlıklı Beslenme'],['#ccdfc5','Spor Beslenmesi']].map(([c,l],idx)=>(
+              {[['#548a48','Weight Loss'],['#b8924a','Weight Gain'],['#7aaa6d','Healthy Nutrition'],['#ccdfc5','Sports Nutrition']].map(([c,l],idx)=>(
                 <div key={l} style={{display:'flex',alignItems:'center',gap:10}}>
                   <div style={{width:10,height:10,borderRadius:'50%',background:c,flexShrink:0}}/>
                   <span style={{fontSize:12,color:'var(--muted)',flex:1}}>{l}</span>
@@ -142,17 +142,17 @@ export default function Dashboard() {
           {/* Today's appointments */}
           <div style={S.panel}>
             <div style={S.panelHeader}>
-              <span style={{fontSize:14,fontWeight:600}}>Bugünkü Randevular</span>
-              <Link to="/randevular" style={{fontSize:12,color:'var(--primary)',fontWeight:500}}>Tüm randevular →</Link>
+              <span style={{fontSize:14,fontWeight:600}}>Today's Appointments</span>
+              <Link to="/randevular" style={{fontSize:12,color:'var(--primary)',fontWeight:500}}>All appointments →</Link>
             </div>
             <table style={{width:'100%',borderCollapse:'collapse'}}>
-              <thead><tr><th style={S.th}>Danışan</th><th style={S.th}>Saat</th><th style={S.th}>Tür</th><th style={S.th}>Durum</th><th style={S.th}></th></tr></thead>
+              <thead><tr><th style={S.th}>Client</th><th style={S.th}>Time</th><th style={S.th}>Type</th><th style={S.th}>Status</th><th style={S.th}></th></tr></thead>
               <tbody>
                 {isLoading && (
-                  <tr><td colSpan={5} style={{...S.td,textAlign:'center',color:'var(--muted)'}}>Yükleniyor...</td></tr>
+                  <tr><td colSpan={5} style={{...S.td,textAlign:'center',color:'var(--muted)'}}>Loading...</td></tr>
                 )}
                 {!isLoading && todayAppts.length === 0 && (
-                  <tr><td colSpan={5} style={{...S.td,textAlign:'center',color:'var(--muted)'}}>Bugün randevu yok.</td></tr>
+                  <tr><td colSpan={5} style={{...S.td,textAlign:'center',color:'var(--muted)'}}>No appointments today.</td></tr>
                 )}
                 {!isLoading && todayAppts.map(apt=>{
                   const statusTr = APPOINTMENT_STATUS_TO_TR[apt.status] || apt.status;
@@ -162,12 +162,12 @@ export default function Dashboard() {
                         <div style={{width:32,height:32,borderRadius:'50%',background:'var(--sage-100)',color:'var(--sage-700)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,flexShrink:0}}>
                           {(apt.client_name||'').split(' ').slice(0,2).map(w=>w[0]||'').join('')}
                         </div>
-                        <div><div style={{fontWeight:500}}>{apt.client_name}</div><div style={{fontSize:11,color:'var(--muted)'}}>{apt.type||'Danışmanlık'}</div></div>
+                        <div><div style={{fontWeight:500}}>{apt.client_name}</div><div style={{fontSize:11,color:'var(--muted)'}}>{apt.type||'Consultation'}</div></div>
                       </div></td>
                       <td style={{...S.td,fontFamily:'var(--font-mono)'}}>{formatTime(apt.start_time)}</td>
-                      <td style={S.td}><span style={{padding:'3px 10px',borderRadius:99,fontSize:11,fontWeight:500,background:apt.mode==='Online'?'#e2f0f8':'var(--sage-100)',color:apt.mode==='Online'?'var(--info)':'var(--sage-700)'}}>{apt.mode||'Yüz yüze'}</span></td>
+                      <td style={S.td}><span style={{padding:'3px 10px',borderRadius:99,fontSize:11,fontWeight:500,background:apt.mode==='Online'?'#e2f0f8':'var(--sage-100)',color:apt.mode==='Online'?'var(--info)':'var(--sage-700)'}}>{apt.mode||'In-person'}</span></td>
                       <td style={S.td}><span style={{display:'inline-flex',alignItems:'center',gap:5,fontSize:12,color:statusColors[statusTr]||'var(--muted)'}}><span style={{width:7,height:7,borderRadius:'50%',background:statusColors[statusTr]||'var(--muted)'}}></span>{statusTr ? statusTr.charAt(0).toUpperCase()+statusTr.slice(1) : apt.status}</span></td>
-                      <td style={S.td}><button onClick={()=>toast(`${apt.client_name} randevusu açılıyor`,'info')} style={{padding:'6px 12px',borderRadius:99,border:'none',background:'transparent',fontSize:12,fontWeight:500,color:'var(--primary)',cursor:'pointer'}}>Detay</button></td>
+                      <td style={S.td}><button onClick={()=>toast(`Opening ${apt.client_name} appointment`,'info')} style={{padding:'6px 12px',borderRadius:99,border:'none',background:'transparent',fontSize:12,fontWeight:500,color:'var(--primary)',cursor:'pointer'}}>Details</button></td>
                     </tr>
                   );
                 })}
@@ -178,8 +178,8 @@ export default function Dashboard() {
           {/* Tasks */}
           <div style={S.panel}>
             <div style={S.panelHeader}>
-              <span style={{fontSize:14,fontWeight:600}}>Görevler</span>
-              <span style={{fontSize:12,color:'var(--primary)',fontWeight:500,cursor:'pointer'}} onClick={()=>toast('Tüm görevler','info')}>Tümü →</span>
+              <span style={{fontSize:14,fontWeight:600}}>Tasks</span>
+              <span style={{fontSize:12,color:'var(--primary)',fontWeight:500,cursor:'pointer'}} onClick={()=>toast('All tasks','info')}>All →</span>
             </div>
             <div style={{padding:'8px 12px',display:'flex',flexDirection:'column',gap:2}}>
               {tasks.map(t=>(
@@ -194,11 +194,11 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
-            <div onClick={()=>{const n=prompt('Yeni görev:');if(n)setTasks(p=>[...p,{id:Date.now(),text:n,done:false,priority:'Normal',pc:'badge-info'}]);}}
+            <div onClick={()=>{const n=prompt('New task:');if(n)setTasks(p=>[...p,{id:Date.now(),text:n,done:false,priority:'Normal',pc:'badge-info'}]);}}
               style={{display:'flex',alignItems:'center',gap:10,padding:'9px 22px',margin:'4px 12px 12px',borderRadius:'var(--radius-md)',cursor:'pointer',border:'1.5px dashed var(--border)',color:'var(--muted)',fontSize:13,transition:'all 0.15s'}}
               onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--primary)';e.currentTarget.style.color='var(--primary)';e.currentTarget.style.background='var(--sage-50)'}}
               onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--muted)';e.currentTarget.style.background='transparent'}}>
-              <span>➕</span> Yeni görev ekle
+              <span>➕</span> Add new task
             </div>
           </div>
         </div>

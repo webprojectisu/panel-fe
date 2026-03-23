@@ -8,7 +8,7 @@ import { useApi } from '../hooks/useApi';
 import { transformClient, CLIENT_STATUS_TO_API } from '../utils/dataTransformers';
 import { extractApiError, mapDetailsToFieldErrors } from '../utils/errorHandlers';
 
-const statusMap = { aktif:{label:'Aktif',bg:'var(--sage-100)',color:'var(--sage-700)'}, beklemede:{label:'Beklemede',bg:'#fef3e2',color:'var(--warning)'}, tamamlandi:{label:'Tamamlandı',bg:'var(--bej-100)',color:'var(--bej-700)'} };
+const statusMap = { aktif:{label:'Active',bg:'var(--sage-100)',color:'var(--sage-700)'}, beklemede:{label:'Pending',bg:'#fef3e2',color:'var(--warning)'}, tamamlandi:{label:'Completed',bg:'var(--bej-100)',color:'var(--bej-700)'} };
 
 function Badge({ status }) {
   const s = statusMap[status]||statusMap.aktif;
@@ -32,7 +32,7 @@ function ClientCard({ c, planList, onClick }) {
         </div>
       </div>
       <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:14}}>
-        {[[(c.weight ? c.weight+'kg' : '—'),'Kilo'],[(c.bmi || '—'),'BMI'],[(c.body_fat || '—'),'Yağ %']].map(([v,l])=>(
+        {[[(c.weight ? c.weight+'kg' : '—'),'Weight'],[(c.bmi || '—'),'BMI'],[(c.body_fat || '—'),'Fat %']].map(([v,l])=>(
           <div key={l} style={{background:'var(--sage-50)',borderRadius:'var(--radius-sm)',padding:'8px',textAlign:'center'}}>
             <div style={{fontSize:15,fontWeight:700}}>{v}</div>
             <div style={{fontSize:9,color:'var(--muted)',textTransform:'uppercase',letterSpacing:'0.5px'}}>{l}</div>
@@ -40,7 +40,7 @@ function ClientCard({ c, planList, onClick }) {
         ))}
       </div>
       <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--muted)',marginBottom:5}}>
-        <span>Hedef İlerlemesi</span><span style={{fontWeight:600,color:'var(--primary)'}}>{c.progress}%</span>
+        <span>Goal Progress</span><span style={{fontWeight:600,color:'var(--primary)'}}>{c.progress}%</span>
       </div>
       <div style={{height:5,background:'var(--sage-100)',borderRadius:99,overflow:'hidden',marginBottom:12}}>
         <div style={{height:'100%',background:'linear-gradient(90deg,var(--primary),var(--sage-400))',width:(c.progress||0)+'%',transition:'width 0.8s'}}/>
@@ -56,11 +56,11 @@ function ClientCard({ c, planList, onClick }) {
 
 function ClientModal({ c, planList, onClose, onDelete }) {
   const toast = useToast();
-  const [tab, setTab] = useState('genel');
+  const [tab, setTab] = useState('general');
   const [clientMeasurements, setClientMeasurements] = useState([]);
   const planTitle = planList?.find(p=>p.client_id===c.id)?.title||'—';
   if (!c) return null;
-  const tabs = [['genel','Genel'],['olcumler','Ölçümler'],['program','Program'],['gecmis','Geçmiş']];
+  const tabs = [['general','General'],['measurements','Measurements'],['program','Program'],['history','History']];
 
   const loadMeasurements = async (clientId) => {
     try {
@@ -71,16 +71,16 @@ function ClientModal({ c, planList, onClose, onDelete }) {
 
   const handleTabChange = (k) => {
     setTab(k);
-    if (k === 'olcumler') {
+    if (k === 'measurements') {
       loadMeasurements(c.id);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`${c.name} silinsin mi?`)) return;
+    if (!window.confirm(`Delete ${c.name}?`)) return;
     try {
       await deleteClient(c.id);
-      toast('Danışan silindi', 'success');
+      toast('Client deleted', 'success');
       onDelete();
       onClose();
     } catch (err) {
@@ -103,7 +103,7 @@ function ClientModal({ c, planList, onClose, onDelete }) {
             <div>
               <div style={{fontFamily:'var(--font-display)',fontSize:20,fontWeight:500,marginBottom:3}}>{c.name}</div>
               <div style={{fontSize:12,color:'var(--muted)',display:'flex',gap:10,flexWrap:'wrap'}}>
-                <span>👤 {c.age} yaş · {c.gender==='K'||c.gender==='Kadın'?'Kadın':'Erkek'}</span>
+                <span>👤 {c.age} years · {c.gender==='K'||c.gender==='Kadın'?'Female':'Male'}</span>
                 <span>⚖️ {c.weight} kg</span>
                 <span>📏 {c.height} cm</span>
               </div>
@@ -117,12 +117,12 @@ function ClientModal({ c, planList, onClose, onDelete }) {
         </div>
 
         <div style={{padding:24}}>
-          {tab==='genel'&&(
+          {tab==='general'&&(
             <>
               <div style={{marginBottom:20}}>
-                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Kişisel Bilgiler</div>
+                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Personal Information</div>
                 <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-                  {[['Telefon',c.phone],['E-posta',c.email],['Program',planTitle],['Sonraki Randevu',c.next_appt||'—']].map(([l,v])=>(
+                  {[['Phone',c.phone],['Email',c.email],['Program',planTitle],['Next Appointment',c.next_appt||'—']].map(([l,v])=>(
                     <div key={l} style={{background:'var(--sage-50)',borderRadius:'var(--radius-md)',padding:12}}>
                       <div style={{fontSize:11,color:'var(--muted)',marginBottom:3}}>{l}</div>
                       <div style={{fontSize:14,fontWeight:600}}>{v}</div>
@@ -131,27 +131,27 @@ function ClientModal({ c, planList, onClose, onDelete }) {
                 </div>
               </div>
               <div style={{marginBottom:20}}>
-                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Hedef Durumu</div>
+                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Goal Status</div>
                 <div style={{background:'var(--sage-50)',borderRadius:'var(--radius-md)',padding:14}}>
-                  <div style={{display:'flex',justifyContent:'space-between',fontSize:12,marginBottom:6}}><span>Hedef: {c.goal||'—'}</span><span style={{fontWeight:600,color:'var(--primary)'}}>{c.progress}%</span></div>
+                  <div style={{display:'flex',justifyContent:'space-between',fontSize:12,marginBottom:6}}><span>Goal: {c.goal||'—'}</span><span style={{fontWeight:600,color:'var(--primary)'}}>{c.progress}%</span></div>
                   <div style={{height:8,background:'white',borderRadius:99,overflow:'hidden'}}>
                     <div style={{height:'100%',background:'linear-gradient(90deg,var(--primary),var(--sage-400))',width:(c.progress||0)+'%',transition:'width 0.8s'}}/>
                   </div>
-                  <div style={{fontSize:11,color:'var(--muted)',marginTop:6}}>{c.progress>=100?'🎉 Hedefe ulaşıldı!':`Hedefe ${100-(c.progress||0)}% kaldı`}</div>
+                  <div style={{fontSize:11,color:'var(--muted)',marginTop:6}}>{c.progress>=100?'🎉 Goal reached!':`${100-(c.progress||0)}% to goal`}</div>
                 </div>
               </div>
               <div>
-                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Notlar</div>
+                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Notes</div>
                 <textarea defaultValue={c.notes||''} style={{width:'100%',padding:'10px 12px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:13,color:'var(--charcoal)',resize:'vertical',minHeight:80,background:'var(--sage-50)',outline:'none',fontFamily:'var(--font-body)',boxSizing:'border-box'}}/>
               </div>
             </>
           )}
-          {tab==='olcumler'&&(
+          {tab==='measurements'&&(
             <>
               <div style={{marginBottom:20}}>
-                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Son Ölçümler</div>
+                <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Latest Measurements</div>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
-                  {[[(c.weight ? c.weight+' kg' : '—'),'Kilo',''],[(c.bmi||'—'),'BMI',''],[(c.body_fat||'—'),'Yağ %',''],[(c.muscle||'—'),'Kas Kütlesi',''],[(c.height ? c.height+' cm' : '—'),'Boy',''],['—','Su','']].map(([v,l,tr])=>(
+                  {[[(c.weight ? c.weight+' kg' : '—'),'Weight',''],[(c.bmi||'—'),'BMI',''],[(c.body_fat||'—'),'Fat %',''],[(c.muscle||'—'),'Muscle Mass',''],[(c.height ? c.height+' cm' : '—'),'Height',''],['—','Water','']].map(([v,l,tr])=>(
                     <div key={l} style={{background:'var(--sage-50)',borderRadius:'var(--radius-md)',padding:12,textAlign:'center'}}>
                       <div style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:700,color:'var(--primary-dark)'}}>{v}</div>
                       <div style={{fontSize:11,color:'var(--muted)'}}>{l}</div>
@@ -162,22 +162,22 @@ function ClientModal({ c, planList, onClose, onDelete }) {
               </div>
               {clientMeasurements.length > 0 && (
                 <div>
-                  <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Ölçüm Geçmişi</div>
+                  <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:10}}>Measurement History</div>
                   <table style={{width:'100%',borderCollapse:'collapse'}}>
-                    <thead><tr>{['Tarih','Kilo','BMI','Yağ%','Kas'].map(h=><th key={h} style={{fontSize:11,fontWeight:600,padding:'8px 10px',textAlign:'left',background:'var(--sage-50)',color:'var(--muted)'}}>{h}</th>)}</tr></thead>
+                    <thead><tr>{['Date','Weight','BMI','Fat%','Muscle'].map(h=><th key={h} style={{fontSize:11,fontWeight:600,padding:'8px 10px',textAlign:'left',background:'var(--sage-50)',color:'var(--muted)'}}>{h}</th>)}</tr></thead>
                     <tbody>{clientMeasurements.map((m,i)=><tr key={m.id||i}>{[m.date||m.measured_at,m.weight ? m.weight+' kg' : '—',m.bmi||'—',m.body_fat ? m.body_fat+'%' : '—',m.muscle_mass ? m.muscle_mass+' kg' : '—'].map((v,j)=><td key={j} style={{padding:'10px',fontSize:13,borderBottom:'1px solid var(--border-light)'}}>{v}</td>)}</tr>)}</tbody>
                   </table>
                 </div>
               )}
               {clientMeasurements.length === 0 && (
-                <div style={{textAlign:'center',padding:'20px',color:'var(--muted)',fontSize:13}}>Henüz ölçüm kaydı yok.</div>
+                <div style={{textAlign:'center',padding:'20px',color:'var(--muted)',fontSize:13}}>No measurement records yet.</div>
               )}
             </>
           )}
           {tab==='program'&&(
             <>
               <div style={{background:'var(--sage-50)',borderRadius:'var(--radius-md)',padding:16,marginBottom:16}}>
-                <div style={{fontSize:15,fontWeight:600,marginBottom:8}}>{planTitle||'Program Atanmamış'}</div>
+                <div style={{fontSize:15,fontWeight:600,marginBottom:8}}>{planTitle||'No Program Assigned'}</div>
               </div>
               {[['🌅 Kahvaltı (07:00)','2 yumurta, 1 dilim tam tahıllı ekmek, 1 çorba kaşığı zeytinyağı, salatalık-domates'],['☀️ Öğle (12:30)','120g tavuk göğsü (ızgara), 1 kase yeşil salata, 3 yemek kaşığı esmer pirinç'],['🌆 Akşam (19:00)','1 porsiyon sebze çorbası, 100g balık, buharda brokoli'],['🌙 Ara Öğün','1 adet meyve veya 30g yulaf + 200ml süt']].map(([t,d])=>(
                 <div key={t} style={{background:'white',border:'1px solid var(--border-light)',borderRadius:'var(--radius-md)',padding:12,marginBottom:8}}>
@@ -187,13 +187,13 @@ function ClientModal({ c, planList, onClose, onDelete }) {
               ))}
             </>
           )}
-          {tab==='gecmis'&&(
+          {tab==='history'&&(
             <div style={{display:'flex',flexDirection:'column',gap:8}}>
               {[['17 Mar 2026','Kontrol · 3. ay değerlendirme'],['17 Şub 2026','Kontrol · 2. ay ölçüm güncellemesi'],['20 Oca 2026','Program revizyonu · Kalori ayarı'],['10 Oca 2026','İlk görüşme · Anamnez ve program hazırlama']].map(([d,t])=>(
                 <div key={d} style={{display:'flex',alignItems:'center',gap:12,padding:10,background:'var(--sage-50)',borderRadius:'var(--radius-md)'}}>
                   <div style={{fontSize:12,fontFamily:'var(--font-mono)',color:'var(--muted)',minWidth:90}}>{d}</div>
                   <div style={{flex:1,fontSize:13}}>{t}</div>
-                  <span style={{padding:'2px 8px',borderRadius:99,fontSize:10,fontWeight:500,background:'var(--sage-100)',color:'var(--sage-700)'}}>Tamamlandı</span>
+                  <span style={{padding:'2px 8px',borderRadius:99,fontSize:10,fontWeight:500,background:'var(--sage-100)',color:'var(--sage-700)'}}>Completed</span>
                 </div>
               ))}
             </div>
@@ -202,9 +202,9 @@ function ClientModal({ c, planList, onClose, onDelete }) {
 
         {/* Actions */}
         <div style={{display:'flex',gap:8,flexWrap:'wrap',padding:'14px 24px',borderTop:'1px solid var(--border-light)',background:'var(--sage-50)',position:'sticky',bottom:0}}>
-          <button onClick={()=>toast('Randevu oluşturuluyor...','success')} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>📅 Randevu Oluştur</button>
-          <button onClick={()=>toast('Program düzenleniyor...','info')} style={{padding:'8px 16px',borderRadius:99,background:'transparent',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>🥗 Programı Düzenle</button>
-          <button onClick={()=>toast('Ölçüm girişi açılıyor...','info')} style={{padding:'8px 16px',borderRadius:99,background:'transparent',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>📏 Ölçüm Gir</button>
+          <button onClick={()=>toast('Creating appointment...','success')} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>📅 Create Appointment</button>
+          <button onClick={()=>toast('Editing program...','info')} style={{padding:'8px 16px',borderRadius:99,background:'transparent',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>🥗 Edit Program</button>
+          <button onClick={()=>toast('Opening measurement entry...','info')} style={{padding:'8px 16px',borderRadius:99,background:'transparent',border:'1px solid var(--border)',fontSize:13,fontWeight:500,cursor:'pointer'}}>📏 Enter Measurement</button>
           <button onClick={handleDelete} style={{marginLeft:'auto',padding:'8px 12px',borderRadius:99,background:'transparent',border:'none',fontSize:13,color:'var(--danger)',cursor:'pointer'}}>🗑</button>
         </div>
       </div>
@@ -263,7 +263,7 @@ export default function Danisanlar() {
       setShowAddModal(false);
       setNewClient({ name:'', age:'', gender:'K', phone:'', email:'', program_id:1, goal:'' });
       setFieldErrors({});
-      toast('Danışan eklendi ✅', 'success');
+      toast('Client added ✅', 'success');
     } catch (err) {
       const { message, details } = extractApiError(err);
       setFieldErrors(mapDetailsToFieldErrors(details));
@@ -273,24 +273,24 @@ export default function Danisanlar() {
 
   return (
     <AppLayout>
-      <Topbar title="Danışan Yönetimi" subtitle={`${clients.length} aktif danışan`}
-        actions={<button onClick={()=>{setShowAddModal(true);setFieldErrors({});}} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ Yeni Danışan</button>}
+      <Topbar title="Client Management" subtitle={`${clients.length} active clients`}
+        actions={<button onClick={()=>{setShowAddModal(true);setFieldErrors({});}} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ New Client</button>}
       />
       <div style={{padding:28,flex:1}}>
         {/* Toolbar */}
         <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:20,flexWrap:'wrap'}}>
           <div style={{display:'flex',alignItems:'center',gap:8,background:'white',border:'1px solid var(--border)',borderRadius:99,padding:'10px 18px',flex:1,minWidth:200,maxWidth:360}}>
             <span>🔍</span>
-            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="İsim, e-posta veya telefon ara..." style={{border:'none',outline:'none',fontSize:14,color:'var(--charcoal)',background:'transparent',width:'100%'}}/>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search name, email or phone..." style={{border:'none',outline:'none',fontSize:14,color:'var(--charcoal)',background:'transparent',width:'100%'}}/>
           </div>
           <select value={filterStatus} onChange={e=>setFilterStatus(e.target.value)} style={inputStyle}>
-            <option value="">Tüm Durumlar</option>
-            <option value="aktif">Aktif</option>
-            <option value="beklemede">Beklemede</option>
-            <option value="tamamlandi">Tamamlandı</option>
+            <option value="">All Statuses</option>
+            <option value="aktif">Active</option>
+            <option value="beklemede">Pending</option>
+            <option value="tamamlandi">Completed</option>
           </select>
           <select value={filterProgram} onChange={e=>setFilterProgram(e.target.value)} style={inputStyle}>
-            <option value="">Tüm Programlar</option>
+            <option value="">All Programs</option>
             {(planList||[]).map(p=><option key={p.id} value={p.id}>{p.title}</option>)}
           </select>
           <div style={{marginLeft:'auto',display:'flex',gap:8,alignItems:'center'}}>
@@ -304,19 +304,19 @@ export default function Danisanlar() {
 
         {/* Loading */}
         {isClientsLoading && (
-          <div style={{textAlign:'center',padding:'40px',color:'var(--text-muted,var(--muted))'}}>Yükleniyor...</div>
+          <div style={{textAlign:'center',padding:'40px',color:'var(--text-muted,var(--muted))'}}>Loading...</div>
         )}
 
         {/* Empty state */}
         {!isClientsLoading && clients.length === 0 && (
-          <div style={{textAlign:'center',padding:'40px',color:'var(--text-muted,var(--muted))'}}>Henüz danışan eklenmedi.</div>
+          <div style={{textAlign:'center',padding:'40px',color:'var(--text-muted,var(--muted))'}}>No clients added yet.</div>
         )}
 
         {/* Grid */}
         {!isClientsLoading && view==='grid' && clients.length > 0 && (
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(280px,1fr))',gap:16}}>
             {filtered.map(c=><ClientCard key={c.id} c={c} planList={planList} onClick={()=>setSelected(c)}/>)}
-            {filtered.length===0&&<div style={{gridColumn:'1/-1',textAlign:'center',padding:60,color:'var(--muted)',fontSize:15}}>Danışan bulunamadı.</div>}
+            {filtered.length===0&&<div style={{gridColumn:'1/-1',textAlign:'center',padding:60,color:'var(--muted)',fontSize:15}}>No clients found.</div>}
           </div>
         )}
 
@@ -324,7 +324,7 @@ export default function Danisanlar() {
         {!isClientsLoading && view==='list' && clients.length > 0 && (
           <div style={{background:'white',border:'1px solid var(--border-light)',borderRadius:'var(--radius-lg)',overflow:'hidden'}}>
             <table style={{width:'100%',borderCollapse:'collapse'}}>
-              <thead><tr>{['Danışan','Yaş/Cinsiyet','Program','Başlangıç','Kilo','İlerleme','Durum',''].map(h=><th key={h} style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',padding:'12px 14px',textAlign:'left',background:'var(--sage-50)',whiteSpace:'nowrap'}}>{h}</th>)}</tr></thead>
+              <thead><tr>{['Client','Age/Gender','Program','Start','Weight','Progress','Status',''].map(h=><th key={h} style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',padding:'12px 14px',textAlign:'left',background:'var(--sage-50)',whiteSpace:'nowrap'}}>{h}</th>)}</tr></thead>
               <tbody>
                 {filtered.map(c=>{
                   const planTitle = planList?.find(x=>x.client_id===c.id)?.title||'—';
@@ -340,14 +340,14 @@ export default function Danisanlar() {
                       <td style={{padding:'12px 14px',fontSize:13,borderBottom:'1px solid var(--border-light)'}}>{c.weight ? c.weight+' kg' : '—'}</td>
                       <td style={{padding:'12px 14px',borderBottom:'1px solid var(--border-light)'}}><div style={{display:'flex',alignItems:'center',gap:8}}><div style={{width:80,height:5,background:'var(--sage-100)',borderRadius:99,overflow:'hidden'}}><div style={{height:'100%',background:'var(--primary)',width:(c.progress||0)+'%'}}/></div><span style={{fontSize:12,fontWeight:600,color:'var(--primary)'}}>{c.progress}%</span></div></td>
                       <td style={{padding:'12px 14px',borderBottom:'1px solid var(--border-light)'}}><Badge status={c.status}/></td>
-                      <td style={{padding:'12px 14px',borderBottom:'1px solid var(--border-light)'}}><button onClick={e=>{e.stopPropagation();setSelected(c);}} style={{padding:'5px 12px',borderRadius:99,border:'none',background:'transparent',fontSize:12,color:'var(--primary)',fontWeight:500,cursor:'pointer'}}>Detay →</button></td>
+                      <td style={{padding:'12px 14px',borderBottom:'1px solid var(--border-light)'}}><button onClick={e=>{e.stopPropagation();setSelected(c);}} style={{padding:'5px 12px',borderRadius:99,border:'none',background:'transparent',fontSize:12,color:'var(--primary)',fontWeight:500,cursor:'pointer'}}>Details →</button></td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
             <div style={{padding:'14px 20px',display:'flex',justifyContent:'space-between',alignItems:'center',fontSize:13,color:'var(--muted)'}}>
-              <span>{filtered.length} danışan gösteriliyor</span>
+              <span>Showing {filtered.length} clients</span>
             </div>
           </div>
         )}
@@ -368,10 +368,10 @@ export default function Danisanlar() {
         <div onClick={e=>{if(e.target===e.currentTarget)setShowAddModal(false);}} style={{position:'fixed',inset:0,background:'rgba(30,42,26,0.5)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
           <div style={{background:'white',borderRadius:'var(--radius-xl)',padding:32,width:480,maxWidth:'95vw',boxShadow:'var(--shadow-xl)',animation:'scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1)'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>Yeni Danışan</span>
+              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>New Client</span>
               <button onClick={()=>setShowAddModal(false)} style={{width:32,height:32,borderRadius:'50%',background:'var(--sage-50)',border:'none',cursor:'pointer'}}>✕</button>
             </div>
-            {[['Ad Soyad','name','text'],['Yaş','age','number'],['Telefon','phone','tel'],['E-posta','email','email'],['Hedef','goal','text']].map(([l,k,t])=>(
+            {[['Full Name','name','text'],['Age','age','number'],['Phone','phone','tel'],['Email','email','email'],['Goal','goal','text']].map(([l,k,t])=>(
               <div key={k} style={{marginBottom:14}}>
                 <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>{l}</label>
                 <input type={t} value={newClient[k]} onChange={e=>setNewClient(p=>({...p,[k]:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
@@ -381,14 +381,14 @@ export default function Danisanlar() {
               </div>
             ))}
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Cinsiyet</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Gender</label>
               <select value={newClient.gender} onChange={e=>setNewClient(p=>({...p,gender:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none'}}>
-                <option value="K">Kadın</option><option value="E">Erkek</option>
+                <option value="K">Female</option><option value="E">Male</option>
               </select>
             </div>
             <div style={{display:'flex',justifyContent:'flex-end',gap:10,marginTop:24,paddingTop:20,borderTop:'1px solid var(--border-light)'}}>
-              <button onClick={()=>setShowAddModal(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>İptal</button>
-              <button onClick={handleAddClient} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Kaydet</button>
+              <button onClick={()=>setShowAddModal(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>Cancel</button>
+              <button onClick={handleAddClient} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>Save</button>
             </div>
           </div>
         </div>

@@ -2,30 +2,30 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const features = [
-  { icon:'👥', title:'Gelişmiş Danışan Yönetimi', desc:'Her danışanın geçmiş kayıtları, ölçümleri, beslenme programları ve notları tek profilde. Filtreleme ve arama ile anında bulun.' },
-  { icon:'📅', title:'Akıllı Randevu Sistemi', desc:'Online rezervasyon, otomatik SMS/e-posta hatırlatma, takvim senkronizasyonu ve çakışma kontrolü ile sıfır iptal.' },
-  { icon:'📊', title:'Ölçüm & İlerleme Analizi', desc:'Kilo, BMI, vücut yağ oranı, kas kütlesi ve çevre ölçümleri. Görsel grafiklerle ilerlemeyi danışanınıza anlatın.' },
-  { icon:'🥗', title:'Beslenme Programı Oluşturucu', desc:'Kalori hesabı yapan, makro dengeyi gösteren, 500+ tarif içeren akıllı program oluşturucu. Tek tıkla PDF olarak paylaşın.' },
-  { icon:'💰', title:'Gelir & Gider Takibi', desc:'Fatura oluşturma, ödeme takibi, aylık/yıllık finansal raporlar. İşletmenizin karlılığını her an görün.' },
-  { icon:'🌐', title:'Kişisel Klinik Web Sitesi', desc:'Markanıza özel, online randevu alabilen profesyonel web sayfanız. Kod bilmeden dakikalar içinde yayına alın.' },
+  { icon:'👥', title:'Advanced Client Management', desc:'All client history, measurements, nutrition programs and notes in one profile. Find instantly with filtering and search.' },
+  { icon:'📅', title:'Smart Appointment System', desc:'Online booking, automatic SMS/email reminders, calendar sync and conflict control for zero cancellations.' },
+  { icon:'📊', title:'Measurement & Progress Analysis', desc:'Weight, BMI, body fat percentage, muscle mass and circumference measurements. Show progress to your clients with visual charts.' },
+  { icon:'🥗', title:'Nutrition Program Builder', desc:'Smart program builder with calorie calculation, macro balance display, 500+ recipes. Share as PDF with one click.' },
+  { icon:'💰', title:'Income & Expense Tracking', desc:'Invoice creation, payment tracking, monthly/yearly financial reports. See your business profitability anytime.' },
+  { icon:'🌐', title:'Personal Clinic Website', desc:'Professional website with online booking, customized to your brand. Publish in minutes without coding.' },
 ];
 
 const testimonials = [
-  { initials:'AK', color:'linear-gradient(135deg,#548a48,#3e6b34)', name:'Arzu Koçak, Dyt.', title:'İstanbul · 3 yıldır kullanıyor', text:'NutriFlow\'dan önce her şeyi Excel\'de yapıyordum. Şimdi tüm takiplerim otomatik, danışan memnuniyetim %40 arttı.' },
-  { initials:'MY', color:'linear-gradient(135deg,#e0c898,#b8924a)', name:'Merve Yıldız, Dyt.', title:'Ankara · 18 aydır kullanıyor', text:'Randevu hatırlatmaları sayesinde no-show oranım sıfıra indi. Klinik web sitem sayesinde yeni danışan almak çok kolaylaştı.' },
-  { initials:'SE', color:'linear-gradient(135deg,#7aaa6d,#548a48)', name:'Selin Erdoğan, Dyt.', title:'İzmir · 2 yıldır kullanıyor', text:'Beslenme programı oluşturucu harika. Saatler süren işlemleri artık dakikalar içinde yapıyorum. Fiyatına göre inanılmaz bir değer.' },
+  { initials:'AK', color:'linear-gradient(135deg,#548a48,#3e6b34)', name:'Arzu Koçak, RD', title:'Istanbul · Using for 3 years', text:'Before NutriFlow, I was doing everything in Excel. Now all my tracking is automatic, client satisfaction increased by 40%.' },
+  { initials:'MY', color:'linear-gradient(135deg,#e0c898,#b8924a)', name:'Merve Yıldız, RD', title:'Ankara · Using for 18 months', text:'Thanks to appointment reminders, my no-show rate dropped to zero. My clinic website made it so easy to get new clients.' },
+  { initials:'SE', color:'linear-gradient(135deg,#7aaa6d,#548a48)', name:'Selin Erdoğan, RD', title:'Izmir · Using for 2 years', text:'The nutrition program builder is amazing. Tasks that took hours now take minutes. Incredible value for the price.' },
 ];
 
 const plans = [
-  { tier:'Başlangıç', price:'0', orig:null, desc:'Kliniğinizi dijitalleştirmeye başlamak için.', featured:false,
-    features:['Sınırsız randevu yönetimi','Temel takvim görünümü','5 aktif danışan','SMS hatırlatma'] },
-  { tier:'Pro', price:'890', orig:'1.200', desc:'Büyüyen klinikler için tam kapsamlı çözüm.', featured:true, badge:'En Popüler',
-    features:['Tüm Başlangıç özellikleri','Sınırsız danışan','Gelişmiş ölçüm analizleri','Gelir & gider takibi','Kişisel klinik web sitesi','Excel entegrasyonu','Beslenme programı oluşturucu','500+ tarif kütüphanesi'] },
-  { tier:'Klinik', price:'2.400', orig:null, desc:'Çok diyetisyenli klinikler için ekip çözümü.', featured:false,
-    features:['Tüm Pro özellikleri','5 diyetisyen hesabı','Ekip takvim yönetimi','Gelişmiş raporlama','Öncelikli destek','Özel entegrasyonlar'] },
+  { tier:'Starter', price:'0', orig:null, desc:'To start digitalizing your clinic.', featured:false,
+    features:['Unlimited appointment management','Basic calendar view','5 active clients','SMS reminders'] },
+  { tier:'Pro', price:'890', orig:'1.200', desc:'Complete solution for growing clinics.', featured:true, badge:'Most Popular',
+    features:['All Starter features','Unlimited clients','Advanced measurement analytics','Income & expense tracking','Personal clinic website','Excel integration','Nutrition program builder','500+ recipe library'] },
+  { tier:'Clinic', price:'2.400', orig:null, desc:'Team solution for multi-dietitian clinics.', featured:false,
+    features:['All Pro features','5 dietitian accounts','Team calendar management','Advanced reporting','Priority support','Custom integrations'] },
 ];
 
-const stats = [['500+','Aktif Diyetisyen'],['48k','Yönetilen Danışan'],['%60','Daha Az Manuel İş'],['4.9★','Kullanıcı Puanı']];
+const stats = [['500+','Active Dietitians'],['48k','Managed Clients'],['60%','Less Manual Work'],['4.9★','User Rating']];
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
@@ -54,17 +54,17 @@ export default function Landing() {
             </span>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:4 }}>
-            {[['#ozellikler','Özellikler'],['#fiyatlar','Fiyatlar'],['#yorumlar','Yorumlar']].map(([h,l])=>(
+            {[['#features','Features'],['#pricing','Pricing'],['#testimonials','Testimonials']].map(([h,l])=>(
               <a key={h} href={h} style={{ padding:'8px 14px', borderRadius:99, fontSize:14, fontWeight:500, color:'var(--muted)', transition:'all 0.15s' }}
                 onMouseEnter={e=>{e.target.style.color='var(--primary)';e.target.style.background='var(--sage-50)'}}
                 onMouseLeave={e=>{e.target.style.color='var(--muted)';e.target.style.background='transparent'}}>{l}</a>
             ))}
           </div>
           <div style={{ display:'flex', gap:10, alignItems:'center' }}>
-            <Link to="/dashboard" style={{ padding:'8px 18px', borderRadius:99, fontSize:14, fontWeight:500, color:'var(--muted)', transition:'all 0.15s' }}>Giriş Yap</Link>
+            <Link to="/dashboard" style={{ padding:'8px 18px', borderRadius:99, fontSize:14, fontWeight:500, color:'var(--muted)', transition:'all 0.15s' }}>Sign In</Link>
             <Link to="/dashboard" style={{ padding:'10px 22px', borderRadius:99, background:'var(--primary)', color:'white', fontSize:14, fontWeight:500, boxShadow:'0 4px 16px rgba(62,107,52,0.35)', transition:'all 0.2s' }}
               onMouseEnter={e=>e.currentTarget.style.transform='translateY(-1px)'}
-              onMouseLeave={e=>e.currentTarget.style.transform='none'}>Ücretsiz Başla</Link>
+              onMouseLeave={e=>e.currentTarget.style.transform='none'}>Start Free</Link>
           </div>
         </div>
       </nav>
@@ -81,28 +81,28 @@ export default function Landing() {
           <div style={{ animation:'fadeUp 0.7s ease both' }}>
             <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:'var(--sage-100)', border:'1px solid var(--sage-200)', color:'var(--sage-700)', padding:'6px 14px', borderRadius:99, fontSize:12.5, fontWeight:500, marginBottom:24 }}>
               <span style={{ width:6, height:6, borderRadius:'50%', background:'var(--sage-500)', animation:'pulse 2s infinite', display:'inline-block' }}/>
-              Diyetisyenler için #1 Platform
+              #1 Platform for Dietitians
             </div>
             <h1 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(44px,5vw,68px)', fontWeight:500, lineHeight:1.1, letterSpacing:'-1px', marginBottom:20 }}>
-              Kliniğinizi<br/>
-              <em style={{ fontStyle:'italic', color:'var(--primary)' }}>dijitale</em> taşıyın,<br/>
-              <span style={{ position:'relative', display:'inline-block' }}>büyüyün
+              Transform your<br/>
+              clinic to <em style={{ fontStyle:'italic', color:'var(--primary)' }}>digital</em>,<br/>
+              <span style={{ position:'relative', display:'inline-block' }}>grow bigger
                 <span style={{ position:'absolute', bottom:4, left:0, right:0, height:3, background:'var(--accent)', borderRadius:2, display:'block' }}/>
               </span>
             </h1>
             <p style={{ fontSize:17, color:'var(--muted)', lineHeight:1.7, marginBottom:36, maxWidth:480 }}>
-              Danışan yönetimi, randevu sistemi, beslenme programı ve finansal takip — hepsini tek, akıllı platformda birleştiren diyetisyen yazılımı.
+              Client management, appointment system, nutrition programs and financial tracking — dietitian software that combines everything in one smart platform.
             </p>
             <div style={{ display:'flex', gap:14, flexWrap:'wrap', marginBottom:40 }}>
               <Link to="/dashboard" style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'16px 32px', borderRadius:99, background:'var(--primary)', color:'white', fontSize:15, fontWeight:500, boxShadow:'0 4px 20px rgba(62,107,52,0.4)', transition:'all 0.2s' }}
                 onMouseEnter={e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.boxShadow='0 8px 28px rgba(62,107,52,0.5)'}}
                 onMouseLeave={e=>{e.currentTarget.style.transform='none';e.currentTarget.style.boxShadow='0 4px 20px rgba(62,107,52,0.4)'}}>
-                ▶ Demo'yu Gör
+                ▶ Watch Demo
               </Link>
-              <a href="#ozellikler" style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'16px 32px', borderRadius:99, background:'transparent', border:'1.5px solid var(--border)', color:'var(--charcoal)', fontSize:15, fontWeight:500, transition:'all 0.2s' }}
+              <a href="#features" style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'16px 32px', borderRadius:99, background:'transparent', border:'1.5px solid var(--border)', color:'var(--charcoal)', fontSize:15, fontWeight:500, transition:'all 0.2s' }}
                 onMouseEnter={e=>{e.currentTarget.style.borderColor='var(--primary)';e.currentTarget.style.color='var(--primary)';e.currentTarget.style.background='var(--sage-50)'}}
                 onMouseLeave={e=>{e.currentTarget.style.borderColor='var(--border)';e.currentTarget.style.color='var(--charcoal)';e.currentTarget.style.background='transparent'}}>
-                Özellikleri İncele
+                Explore Features
               </a>
             </div>
             {/* Trust */}
@@ -114,7 +114,7 @@ export default function Landing() {
               </div>
               <div>
                 <div style={{ color:'var(--accent)', fontSize:12 }}>★★★★★</div>
-                <div style={{ fontSize:13, color:'var(--muted)' }}><strong style={{ color:'var(--charcoal)' }}>500+</strong> diyetisyen tarafından kullanılıyor</div>
+                <div style={{ fontSize:13, color:'var(--muted)' }}>Used by <strong style={{ color:'var(--charcoal)' }}>500+</strong> dietitians</div>
               </div>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function Landing() {
               </div>
               <div style={{ padding:20 }}>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:14 }}>
-                  {[['48','Danışan','↑ +6'],['12','Randevu','bu hafta'],['₺24k','Gelir','↑ %18']].map(([v,l,t])=>(
+                  {[['48','Clients','↑ +6'],['12','Appointments','this week'],['₺24k','Revenue','↑ %18']].map(([v,l,t])=>(
                     <div key={l} style={{ background:'var(--sage-50)', borderRadius:12, padding:12 }}>
                       <div style={{ fontSize:11, color:'var(--muted)', marginBottom:4 }}>{l}</div>
                       <div style={{ fontFamily:'var(--font-display)', fontSize:22, fontWeight:600, color:'var(--primary-dark)' }}>{v}</div>
@@ -141,9 +141,9 @@ export default function Landing() {
                     <div key={i} style={{ flex:1, height:h+'%', borderRadius:'4px 4px 0 0', background:i===6||i===3?'var(--primary)':'var(--sage-200)' }}/>
                   ))}
                 </div>
-                {[['AY','#548a48','Ayşe Yılmaz','Bugün 14:00','Onaylı','var(--sage-100)','var(--sage-700)'],
-                  ['MK','#b8924a','Mert Kaya','Bugün 15:30','Bekliyor','#fef3e2','var(--warning)'],
-                  ['SÇ','#7aaa6d','Selin Çelik','Yarın 10:00','Yeni','#e2f0f8','var(--info)']].map(([ini,c,name,time,st,sbg,sc])=>(
+                {[['AY','#548a48','Ayşe Yılmaz','Today 14:00','Confirmed','var(--sage-100)','var(--sage-700)'],
+                  ['MK','#b8924a','Mert Kaya','Today 15:30','Pending','#fef3e2','var(--warning)'],
+                  ['SÇ','#7aaa6d','Selin Çelik','Tomorrow 10:00','New','#e2f0f8','var(--info)']].map(([ini,c,name,time,st,sbg,sc])=>(
                   <div key={name} style={{ display:'flex', alignItems:'center', gap:10, padding:'7px 8px', background:'var(--sage-50)', borderRadius:10, marginBottom:6 }}>
                     <div style={{ width:28, height:28, borderRadius:'50%', background:c, display:'flex', alignItems:'center', justifyContent:'center', fontSize:10, fontWeight:700, color:'white', flexShrink:0 }}>{ini}</div>
                     <div style={{ flex:1 }}>
@@ -157,30 +157,30 @@ export default function Landing() {
             </div>
             {/* Float cards */}
             <div style={{ position:'absolute', bottom:-16, left:-24, background:'white', border:'1px solid var(--border-light)', borderRadius:12, padding:'10px 14px', boxShadow:'var(--shadow-lg)', fontSize:12, animation:'float 3.5s 0.5s ease-in-out infinite' }}>
-              <div style={{ fontSize:10, color:'var(--muted)' }}>Aylık Başarı</div>
-              <div style={{ fontSize:18, fontWeight:700 }}>%94</div>
-              <div style={{ fontSize:10, color:'var(--success)' }}>↑ hedef kilo oranı</div>
+              <div style={{ fontSize:10, color:'var(--muted)' }}>Monthly Success</div>
+              <div style={{ fontSize:18, fontWeight:700 }}>94%</div>
+              <div style={{ fontSize:10, color:'var(--success)' }}>↑ target weight rate</div>
             </div>
             <div style={{ position:'absolute', top:24, right:-20, background:'white', border:'1px solid var(--border-light)', borderRadius:12, padding:'10px 14px', boxShadow:'var(--shadow-lg)', fontSize:12, animation:'float 4s 1s ease-in-out infinite' }}>
-              <div style={{ fontSize:10, color:'var(--muted)' }}>Yeni Danışan</div>
+              <div style={{ fontSize:10, color:'var(--muted)' }}>New Clients</div>
               <div style={{ fontSize:18, fontWeight:700 }}>+8</div>
-              <div style={{ fontSize:10, color:'var(--success)' }}>bu hafta</div>
+              <div style={{ fontSize:10, color:'var(--success)' }}>this week</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── FEATURES ── */}
-      <section id="ozellikler" style={{ padding:'100px 0', background:'white' }}>
+      <section id="features" style={{ padding:'100px 0', background:'white' }}>
         <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 32px' }}>
           <div style={{ marginBottom:60 }}>
             <div style={{ display:'inline-flex', alignItems:'center', gap:8, color:'var(--primary)', fontSize:12.5, fontWeight:600, textTransform:'uppercase', letterSpacing:'1.5px', marginBottom:16 }}>
-              <span style={{ width:20, height:2, background:'var(--primary)', borderRadius:1, display:'inline-block' }}/>Özellikler
+              <span style={{ width:20, height:2, background:'var(--primary)', borderRadius:1, display:'inline-block' }}/>Features
             </div>
             <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(36px,4vw,52px)', fontWeight:500, lineHeight:1.15, letterSpacing:'-0.5px', marginBottom:16 }}>
-              İhtiyacınız olan<br/><em style={{ fontStyle:'italic', color:'var(--primary)' }}>her şey</em> tek yerde
+              <em style={{ fontStyle:'italic', color:'var(--primary)' }}>Everything</em> you need<br/>in one place
             </h2>
-            <p style={{ fontSize:17, color:'var(--muted)', maxWidth:520, lineHeight:1.7 }}>Randevudan beslenme programına, ölçüm takibinden fatura yönetimine — kliniğinizin tüm operasyonları tek panelden.</p>
+            <p style={{ fontSize:17, color:'var(--muted)', maxWidth:520, lineHeight:1.7 }}>From appointments to nutrition programs, measurement tracking to invoice management — all your clinic operations from one panel.</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:20 }}>
             {features.map((f,i)=>(
@@ -206,14 +206,14 @@ export default function Landing() {
       </section>
 
       {/* ── PRICING ── */}
-      <section id="fiyatlar" style={{ padding:'100px 0' }}>
+      <section id="pricing" style={{ padding:'100px 0' }}>
         <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 32px' }}>
           <div style={{ textAlign:'center', marginBottom:60 }}>
             <div style={{ display:'inline-flex', alignItems:'center', gap:8, color:'var(--primary)', fontSize:12.5, fontWeight:600, textTransform:'uppercase', letterSpacing:'1.5px', marginBottom:16 }}>
-              <span style={{ width:20, height:2, background:'var(--primary)', borderRadius:1, display:'inline-block' }}/>Fiyatlar
+              <span style={{ width:20, height:2, background:'var(--primary)', borderRadius:1, display:'inline-block' }}/>Pricing
             </div>
-            <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(36px,4vw,52px)', fontWeight:500, marginBottom:14 }}>Size uygun planı seçin</h2>
-            <p style={{ fontSize:17, color:'var(--muted)' }}>21 gün ücretsiz deneyin. Kredi kartı gerekmez. İstediğiniz zaman iptal edin.</p>
+            <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(36px,4vw,52px)', fontWeight:500, marginBottom:14 }}>Choose the plan that fits you</h2>
+            <p style={{ fontSize:17, color:'var(--muted)' }}>Try free for 21 days. No credit card required. Cancel anytime.</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:24, alignItems:'center' }}>
             {plans.map((p,i)=><PricingCard key={i} {...p}/>)}
@@ -222,13 +222,13 @@ export default function Landing() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section id="yorumlar" style={{ padding:'100px 0', background:'var(--sage-50)' }}>
+      <section id="testimonials" style={{ padding:'100px 0', background:'var(--sage-50)' }}>
         <div style={{ maxWidth:1200, margin:'0 auto', padding:'0 32px' }}>
           <div style={{ textAlign:'center', marginBottom:60 }}>
             <div style={{ display:'inline-flex', alignItems:'center', gap:8, color:'var(--primary)', fontSize:12.5, fontWeight:600, textTransform:'uppercase', letterSpacing:'1.5px', marginBottom:16 }}>
-              <span style={{ width:20, height:2, background:'var(--primary)', borderRadius:1, display:'inline-block' }}/>Yorumlar
+              <span style={{ width:20, height:2, background:'var(--primary)', borderRadius:1, display:'inline-block' }}/>Testimonials
             </div>
-            <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(36px,4vw,52px)', fontWeight:500 }}>Diyetisyenler ne diyor?</h2>
+            <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(36px,4vw,52px)', fontWeight:500 }}>What dietitians are saying?</h2>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:20 }}>
             {testimonials.map((t,i)=><TestimonialCard key={i} {...t}/>)}
@@ -243,19 +243,19 @@ export default function Landing() {
             <div style={{ position:'absolute', inset:0, background:'radial-gradient(circle at 30% 50%,rgba(168,201,158,0.2) 0%,transparent 60%)', pointerEvents:'none' }}/>
             <div style={{ position:'relative', zIndex:1 }}>
               <h2 style={{ fontFamily:'var(--font-display)', fontSize:'clamp(36px,4vw,56px)', fontWeight:500, color:'white', marginBottom:16 }}>
-                Kliniğinizi bugün<br/><em style={{ fontStyle:'italic' }}>dönüştürün</em>
+                <em style={{ fontStyle:'italic' }}>Transform</em> your clinic<br/>today
               </h2>
-              <p style={{ fontSize:17, color:'rgba(255,255,255,0.7)', marginBottom:40 }}>21 gün ücretsiz deneyin. Kurulum 5 dakika sürer.</p>
+              <p style={{ fontSize:17, color:'rgba(255,255,255,0.7)', marginBottom:40 }}>Try free for 21 days. Setup takes 5 minutes.</p>
               <div style={{ display:'flex', justifyContent:'center', gap:14, flexWrap:'wrap' }}>
                 <Link to="/dashboard" style={{ padding:'16px 32px', borderRadius:99, background:'white', color:'var(--primary-dark)', fontSize:15, fontWeight:600, transition:'all 0.2s' }}
                   onMouseEnter={e=>e.currentTarget.style.transform='translateY(-2px)'}
                   onMouseLeave={e=>e.currentTarget.style.transform='none'}>
-                  🌿 Ücretsiz Başla
+                  🌿 Start Free
                 </Link>
                 <Link to="/dashboard" style={{ padding:'16px 32px', borderRadius:99, background:'transparent', border:'1.5px solid rgba(255,255,255,0.35)', color:'white', fontSize:15, fontWeight:500, transition:'all 0.2s' }}
                   onMouseEnter={e=>{e.currentTarget.style.background='rgba(255,255,255,0.1)';e.currentTarget.style.borderColor='rgba(255,255,255,0.6)'}}
                   onMouseLeave={e=>{e.currentTarget.style.background='transparent';e.currentTarget.style.borderColor='rgba(255,255,255,0.35)'}}>
-                  Demo'yu Gör →
+                  Watch Demo →
                 </Link>
               </div>
             </div>
@@ -269,9 +269,9 @@ export default function Landing() {
           <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr', gap:48, paddingBottom:48, borderBottom:'1px solid rgba(255,255,255,0.1)' }}>
             <div>
               <div style={{ fontFamily:'var(--font-display)', fontSize:26, fontWeight:600, marginBottom:12 }}>🌿 NutriFlow</div>
-              <div style={{ fontSize:14, color:'rgba(255,255,255,0.55)', lineHeight:1.7, maxWidth:280, marginBottom:24 }}>Diyetisyenler için geliştirilmiş kapsamlı dijital klinik yönetim platformu.</div>
+              <div style={{ fontSize:14, color:'rgba(255,255,255,0.55)', lineHeight:1.7, maxWidth:280, marginBottom:24 }}>Comprehensive digital clinic management platform developed for dietitians.</div>
             </div>
-            {[['Ürün',['Özellikler','Fiyatlar','Dashboard Demo','Değişiklik Logu']],['Şirket',['Hakkımızda','Blog','Kariyer','İletişim']],['Yasal',['Gizlilik Politikası','Kullanım Koşulları','KVKK','İade Politikası']]].map(([title,links])=>(
+            {[['Product',['Features','Pricing','Dashboard Demo','Changelog']],['Company',['About','Blog','Careers','Contact']],['Legal',['Privacy Policy','Terms of Service','GDPR','Refund Policy']]].map(([title,links])=>(
               <div key={title}>
                 <div style={{ fontSize:12, fontWeight:600, textTransform:'uppercase', letterSpacing:'1.5px', color:'rgba(255,255,255,0.4)', marginBottom:20 }}>{title}</div>
                 <ul style={{ listStyle:'none', display:'flex', flexDirection:'column', gap:10 }}>
@@ -281,8 +281,8 @@ export default function Landing() {
             ))}
           </div>
           <div style={{ paddingTop:28, display:'flex', justifyContent:'space-between', fontSize:13, color:'rgba(255,255,255,0.4)' }}>
-            <span>© 2026 NutriFlow. Tüm hakları saklıdır.</span>
-            <span>Türkiye'de 🇹🇷 ile üretildi</span>
+            <span>© 2026 NutriFlow. All rights reserved.</span>
+            <span>Made in Turkey 🇹🇷 with ❤️</span>
           </div>
         </div>
       </footer>
@@ -325,7 +325,7 @@ function PricingCard({ tier, price, orig, desc, featured, badge, features }) {
         ))}
       </ul>
       <Link to="/dashboard" style={{ display:'block', textAlign:'center', padding:'14px', borderRadius:99, background:featured?'var(--primary)':'transparent', border:featured?'none':'1.5px solid var(--border)', color:featured?'white':'var(--charcoal)', fontSize:14, fontWeight:500, transition:'all 0.2s', boxShadow:featured?'0 4px 20px rgba(84,138,72,0.4)':'none' }}>
-        {featured?'21 Gün Ücretsiz Dene':price==='0'?'Ücretsiz Başla':'Demo Talep Et'}
+        {featured?'Try Free for 21 Days':price==='0'?'Start Free':'Request Demo'}
       </Link>
     </div>
   );

@@ -6,7 +6,7 @@ export default function AppLayout({ children }) {
   const showToast = useToast();
 
   useEffect(() => {
-    const handler = () => showToast('Sunucu hatası oluştu. Lütfen sayfayı yenileyin.', 'error');
+    const handler = () => showToast('Server error. Please refresh the page.', 'error');
     window.addEventListener('api-error', handler);
     return () => window.removeEventListener('api-error', handler);
   }, []);

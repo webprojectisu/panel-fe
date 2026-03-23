@@ -7,19 +7,19 @@ import { getClients } from '../api/clientService';
 import { transformAppointment, getWeekStart, formatDateShort, APPOINTMENT_STATUS_TO_TR } from '../utils/dataTransformers';
 import { extractApiError, mapDetailsToFieldErrors } from '../utils/errorHandlers';
 
-const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-const DAYS_TR = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma'];
-const DAYS_SHORT = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_TR = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const DAYS_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const HOURS = Array.from({length:12},(_,i)=>i+8);
 const evColors = { 'ev-green':{bg:'#e8f0e4',color:'#2f5227',border:'#548a48'}, 'ev-bej':{bg:'#f8f1e0',color:'#7a5b2a',border:'#b8924a'}, 'ev-blue':{bg:'#e2f0f8',color:'#0c4a6e',border:'#3b82f6'}, 'ev-red':{bg:'#fde8e8',color:'#7f1d1d',border:'#ef4444'} };
 const COLOR_TO_EV = ['ev-green','ev-bej','ev-blue','ev-red','ev-green','ev-bej','ev-blue','ev-red'];
-const statusColors = { onaylı:'var(--success)', bekliyor:'var(--warning)', iptal:'var(--danger)' };
+const statusColors = { confirmed:'var(--success)', pending:'var(--warning)', cancelled:'var(--danger)' };
 
 export default function Randevular() {
   const toast = useToast();
   const [currentWeekStart, setCurrentWeekStart] = useState(() => getWeekStart(new Date()));
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ client_id:'', date:'', start_time:'10:00', end_time:'', notes:'', mode:'Yüz yüze', type:'Kontrol' });
+  const [form, setForm] = useState({ client_id:'', date:'', start_time:'10:00', end_time:'', notes:'', mode:'In-person', type:'Checkup' });
   const [formFieldErrors, setFormFieldErrors] = useState({});
 
   const [appointments, setAppointments] = useState([]);
@@ -81,9 +81,9 @@ export default function Randevular() {
       });
       fetchAppointments();
       setShowModal(false);
-      setForm({ client_id:'', date:'', start_time:'10:00', end_time:'', notes:'', mode:'Yüz yüze', type:'Kontrol' });
+      setForm({ client_id:'', date:'', start_time:'10:00', end_time:'', notes:'', mode:'In-person', type:'Checkup' });
       setFormFieldErrors({});
-      toast('Randevu oluşturuldu', 'success');
+      toast('Appointment created', 'success');
     } catch (err) {
       const { message, details } = extractApiError(err);
       setFormFieldErrors(mapDetailsToFieldErrors(details));
@@ -95,8 +95,8 @@ export default function Randevular() {
 
   return (
     <AppLayout>
-      <Topbar title="Randevu Takvimi" subtitle={`${MONTHS[currentWeekStart.getMonth()]} ${currentWeekStart.getFullYear()}`}
-        actions={<button onClick={()=>{setShowModal(true);setFormFieldErrors({});}} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ Yeni Randevu</button>}
+      <Topbar title="Appointment Calendar" subtitle={`${MONTHS[currentWeekStart.getMonth()]} ${currentWeekStart.getFullYear()}`}
+        actions={<button onClick={()=>{setShowModal(true);setFormFieldErrors({});}} style={{padding:'8px 16px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>➕ New Appointment</button>}
       />
       <div style={{display:'flex',flex:1,overflow:'hidden'}}>
         {/* Left panel */}
@@ -111,7 +111,7 @@ export default function Randevular() {
               </div>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:2}}>
-              {['Pt','Sa','Ça','Pe','Cu','Ct','Pz'].map(d=><div key={d} style={{fontSize:9,fontWeight:600,textAlign:'center',color:'var(--muted)',padding:'3px 0',textTransform:'uppercase'}}>{d}</div>)}
+              {['Mo','Tu','We','Th','Fr','Sa','Su'].map(d=><div key={d} style={{fontSize:9,fontWeight:600,textAlign:'center',color:'var(--muted)',padding:'3px 0',textTransform:'uppercase'}}>{d}</div>)}
               {Array.from({length:startOffset},(_,i)=>{
                 const prev = new Date(miniYear,miniMon,0).getDate();
                 return <div key={'p'+i} style={{aspectRatio:1,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,color:'var(--border)',borderRadius:'50%'}}>{prev-startOffset+i+1}</div>;
@@ -122,7 +122,7 @@ export default function Randevular() {
                   <div key={d} onClick={()=>{
                     const clicked = new Date(miniYear, miniMon, d);
                     setCurrentWeekStart(getWeekStart(clicked));
-                    toast(`${d} ${MONTHS[miniMon]} seçildi`,'info');
+                    toast(`${d} ${MONTHS[miniMon]} selected`,'info');
                   }} style={{aspectRatio:1,display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,cursor:'pointer',borderRadius:'50%',background:isToday?'var(--primary)':'transparent',color:isToday?'white':'var(--charcoal)',fontWeight:isToday?700:400,transition:'all 0.15s',position:'relative'}}
                     onMouseEnter={e=>{if(!isToday)e.currentTarget.style.background='var(--sage-100)'}} onMouseLeave={e=>{if(!isToday)e.currentTarget.style.background='transparent'}}>
                     {d}
@@ -133,20 +133,20 @@ export default function Randevular() {
           </div>
           {/* Upcoming - show from current appointments */}
           <div style={{padding:16,flex:1}}>
-            <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:12}}>Yaklaşan Randevular</div>
+            <div style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:1,color:'var(--muted)',marginBottom:12}}>Upcoming Appointments</div>
             {appointments.slice(0, 5).map((u,i)=>(
               <div key={u.id||i} onClick={()=>toast(`${u.client_name||''} · ${u.type||''}`,'info')} style={{display:'flex',gap:10,padding:10,borderRadius:'var(--radius-md)',cursor:'pointer',marginBottom:4,transition:'background 0.15s'}}
                 onMouseEnter={e=>e.currentTarget.style.background='var(--sage-50)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                 <div style={{width:3,borderRadius:2,background:'var(--primary)',flexShrink:0}}/>
                 <div>
                   <div style={{fontSize:11,fontFamily:'var(--font-mono)',color:'var(--muted)',marginBottom:1}}>{columnDates[u.day-1]?.dateStr || ''} · {String(u.startH).padStart(2,'0')}:{String(u.startM).padStart(2,'0')}</div>
-                  <div style={{fontSize:13,fontWeight:500}}>{u.client_name||'Danışan'}</div>
-                  <div style={{fontSize:11,color:'var(--muted)'}}>{u.type||'Danışmanlık'}</div>
+                  <div style={{fontSize:13,fontWeight:500}}>{u.client_name||'Client'}</div>
+                  <div style={{fontSize:11,color:'var(--muted)'}}>{u.type||'Consultation'}</div>
                 </div>
               </div>
             ))}
             {!isLoading && appointments.length === 0 && (
-              <div style={{fontSize:13,color:'var(--muted)',textAlign:'center',padding:'20px 0'}}>Bu hafta randevu yok.</div>
+              <div style={{fontSize:13,color:'var(--muted)',textAlign:'center',padding:'20px 0'}}>No appointments this week.</div>
             )}
           </div>
         </div>
@@ -157,15 +157,15 @@ export default function Randevular() {
           <div style={{background:'white',borderBottom:'1px solid var(--border-light)',padding:'12px 24px',display:'flex',alignItems:'center',gap:12,flexShrink:0}}>
             <div style={{display:'flex',gap:6}}>
               <button onClick={()=>setCurrentWeekStart(d=>new Date(d.getTime()-7*86400000))} style={{padding:'6px 12px',borderRadius:'var(--radius-md)',background:'var(--sage-50)',border:'1px solid var(--border-light)',cursor:'pointer',fontSize:14}}>‹</button>
-              <button onClick={()=>setCurrentWeekStart(getWeekStart(new Date()))} style={{padding:'6px 12px',borderRadius:'var(--radius-md)',background:'var(--sage-50)',border:'1px solid var(--border-light)',cursor:'pointer',fontSize:13,fontWeight:500}}>Bugün</button>
+              <button onClick={()=>setCurrentWeekStart(getWeekStart(new Date()))} style={{padding:'6px 12px',borderRadius:'var(--radius-md)',background:'var(--sage-50)',border:'1px solid var(--border-light)',cursor:'pointer',fontSize:13,fontWeight:500}}>Today</button>
               <button onClick={()=>setCurrentWeekStart(d=>new Date(d.getTime()+7*86400000))} style={{padding:'6px 12px',borderRadius:'var(--radius-md)',background:'var(--sage-50)',border:'1px solid var(--border-light)',cursor:'pointer',fontSize:14}}>›</button>
             </div>
             <span style={{fontSize:17,fontWeight:600,minWidth:200}}>
               {weekDates[0].getDate()}–{weekDates[6].getDate()} {MONTHS[weekDates[6].getMonth()]} {weekDates[6].getFullYear()}
             </span>
             <div style={{marginLeft:'auto',display:'flex',background:'var(--sage-50)',border:'1px solid var(--border-light)',borderRadius:99,overflow:'hidden'}}>
-              {['Gün','Hafta','Ay'].map(v=>(
-                <button key={v} onClick={()=>toast(`${v} görünümüne geçildi`,'info')} style={{padding:'6px 14px',fontSize:13,fontWeight:500,border:'none',background:v==='Hafta'?'var(--primary)':'transparent',color:v==='Hafta'?'white':'var(--muted)',cursor:'pointer',transition:'all 0.15s'}}>{v}</button>
+              {['Day','Week','Month'].map(v=>(
+                <button key={v} onClick={()=>toast(`Switched to ${v} view`,'info')} style={{padding:'6px 14px',fontSize:13,fontWeight:500,border:'none',background:v==='Week'?'var(--primary)':'transparent',color:v==='Week'?'white':'var(--muted)',cursor:'pointer',transition:'all 0.15s'}}>{v}</button>
               ))}
             </div>
           </div>
@@ -174,7 +174,7 @@ export default function Randevular() {
           <div style={{flex:1,overflowY:'auto',position:'relative'}}>
             {isLoading && (
               <div style={{position:'absolute',inset:0,background:'rgba(255,255,255,0.7)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:10,borderRadius:'8px'}}>
-                <div style={{color:'var(--muted)'}}>Yükleniyor...</div>
+                <div style={{color:'var(--muted)'}}>Loading...</div>
               </div>
             )}
             <div style={{display:'grid',gridTemplateColumns:'52px repeat(5,1fr)',minWidth:600}}>
@@ -216,11 +216,11 @@ export default function Randevular() {
                       const colorKey = COLOR_TO_EV[(a.client_id || 0) % COLOR_TO_EV.length] || 'ev-green';
                       const ec = evColors[colorKey];
                       return (
-                        <div key={a.id} onClick={()=>toast(`${a.client_name||'Danışan'} · ${String(a.startH).padStart(2,'0')}:${String(a.startM).padStart(2,'0')} · ${a.type||''}`,'info')}
+                        <div key={a.id} onClick={()=>toast(`${a.client_name||'Client'} · ${String(a.startH).padStart(2,'0')}:${String(a.startM).padStart(2,'0')} · ${a.type||''}`,'info')}
                           style={{position:'absolute',left:3,right:3,top:top,height:Math.max(height,20),background:ec.bg,color:ec.color,borderLeft:`3px solid ${ec.border}`,borderRadius:'var(--radius-sm)',padding:'3px 6px',fontSize:11,cursor:'pointer',overflow:'hidden',zIndex:5,transition:'all 0.15s'}}
                           onMouseEnter={e=>{e.currentTarget.style.transform='scale(1.02)';e.currentTarget.style.zIndex=10;e.currentTarget.style.boxShadow='var(--shadow-md)';}}
                           onMouseLeave={e=>{e.currentTarget.style.transform='scale(1)';e.currentTarget.style.zIndex=5;e.currentTarget.style.boxShadow='none';}}>
-                          <div style={{fontWeight:600,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{a.client_name||'Danışan'}</div>
+                          <div style={{fontWeight:600,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{a.client_name||'Client'}</div>
                           <div style={{opacity:0.8,fontSize:9,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{String(a.startH).padStart(2,'0')}:{String(a.startM).padStart(2,'0')} · {a.type||''}</div>
                         </div>
                       );
@@ -240,54 +240,54 @@ export default function Randevular() {
         <div onClick={e=>{if(e.target===e.currentTarget)setShowModal(false);}} style={{position:'fixed',inset:0,background:'rgba(30,42,26,0.5)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center'}}>
           <div style={{background:'white',borderRadius:'var(--radius-xl)',padding:32,width:480,maxWidth:'95vw',boxShadow:'var(--shadow-xl)',animation:'scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1)'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
-              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>Yeni Randevu</span>
+              <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:500}}>New Appointment</span>
               <button onClick={()=>setShowModal(false)} style={{width:32,height:32,borderRadius:'50%',background:'var(--sage-50)',border:'none',cursor:'pointer'}}>✕</button>
             </div>
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Danışan</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Client</label>
               <select value={form.client_id} onChange={e=>setForm(p=>({...p,client_id:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none'}}>
-                <option value="">Danışan seçin...</option>
+                <option value="">Select client...</option>
                 {clientList.map(c=><option key={c.id} value={c.id}>{c.full_name} (#{c.id})</option>)}
               </select>
               {formFieldErrors.client_id && <span style={{color:'#dc2626',fontSize:'12px',display:'block',marginTop:'4px'}}>{formFieldErrors.client_id}</span>}
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:14}}>
               <div>
-                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Tarih</label>
+                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Date</label>
                 <input type="date" value={form.date} onChange={e=>setForm(p=>({...p,date:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
                 {formFieldErrors.appointment_date && <span style={{color:'#dc2626',fontSize:'12px',display:'block',marginTop:'4px'}}>{formFieldErrors.appointment_date}</span>}
               </div>
               <div>
-                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Başlangıç Saati</label>
+                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Start Time</label>
                 <input type="time" value={form.start_time} onChange={e=>setForm(p=>({...p,start_time:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
                 {formFieldErrors.start_time && <span style={{color:'#dc2626',fontSize:'12px',display:'block',marginTop:'4px'}}>{formFieldErrors.start_time}</span>}
               </div>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:14}}>
               <div>
-                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Bitiş Saati</label>
+                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>End Time</label>
                 <input type="time" value={form.end_time} onChange={e=>setForm(p=>({...p,end_time:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',boxSizing:'border-box'}}/>
               </div>
               <div>
-                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Tür</label>
+                <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Mode</label>
                 <select value={form.mode} onChange={e=>setForm(p=>({...p,mode:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none'}}>
-                  <option>Yüz yüze</option><option>Online</option>
+                  <option>In-person</option><option>Online</option>
                 </select>
               </div>
             </div>
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Randevu Tipi</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Appointment Type</label>
               <select value={form.type} onChange={e=>setForm(p=>({...p,type:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none'}}>
-                {['İlk Görüşme','Kontrol','Ölçüm Güncellemesi','Program Revizyonu','Takip'].map(v=><option key={v}>{v}</option>)}
+                {['Initial Consultation','Checkup','Measurement Update','Program Revision','Follow-up'].map(v=><option key={v}>{v}</option>)}
               </select>
             </div>
             <div style={{marginBottom:14}}>
-              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Notlar</label>
+              <label style={{fontSize:11,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.8px',color:'var(--muted)',display:'block',marginBottom:5}}>Notes</label>
               <textarea value={form.notes} onChange={e=>setForm(p=>({...p,notes:e.target.value}))} style={{width:'100%',padding:'10px 14px',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',fontSize:14,outline:'none',resize:'vertical',minHeight:60,boxSizing:'border-box'}}/>
             </div>
             <div style={{display:'flex',justifyContent:'flex-end',gap:10,marginTop:24,paddingTop:20,borderTop:'1px solid var(--border-light)'}}>
-              <button onClick={()=>setShowModal(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>İptal</button>
-              <button onClick={handleCreateAppointment} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>✅ Kaydet</button>
+              <button onClick={()=>setShowModal(false)} style={{padding:'9px 20px',borderRadius:99,border:'1px solid var(--border)',background:'white',fontSize:13,fontWeight:500,cursor:'pointer'}}>Cancel</button>
+              <button onClick={handleCreateAppointment} style={{padding:'9px 20px',borderRadius:99,background:'var(--primary)',color:'white',border:'none',fontSize:13,fontWeight:500,cursor:'pointer'}}>✅ Save</button>
             </div>
           </div>
         </div>

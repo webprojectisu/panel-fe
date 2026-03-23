@@ -5,7 +5,7 @@ export default function ProtectedRoute() {
   const { user, isAuthLoading } = useAuth();
   if (isAuthLoading) return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <div>Yükleniyor...</div>
+      <div>Loading...</div>
     </div>
   );
   if (!user) return <Navigate to="/login" replace />;

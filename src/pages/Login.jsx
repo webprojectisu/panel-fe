@@ -67,7 +67,7 @@ export default function Login() {
             NutriFlow
           </h1>
           <p style={{ color: 'var(--muted)', fontSize: '14px', marginTop: '6px' }}>
-            Hesabınıza giriş yapın
+            Sign in to your account
           </p>
         </div>
 
@@ -81,7 +81,7 @@ export default function Login() {
               color: 'var(--charcoal)',
               marginBottom: '8px',
             }}>
-              E-posta
+              Email
             </label>
             <input
               type="email"
@@ -89,7 +89,7 @@ export default function Login() {
               onChange={e => setEmail(e.target.value)}
               required
               disabled={isLoading}
-              placeholder="ornek@email.com"
+              placeholder="example@email.com"
               style={{
                 width: '100%',
                 padding: '10px 14px',
@@ -114,7 +114,7 @@ export default function Login() {
               color: 'var(--charcoal)',
               marginBottom: '8px',
             }}>
-              Şifre
+              Password
             </label>
             <input
               type="password"
@@ -169,7 +169,7 @@ export default function Login() {
               transition: 'background 0.2s',
             }}
           >
-            {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
@@ -179,7 +179,7 @@ export default function Login() {
           fontSize: '13px',
           color: 'var(--muted)',
         }}>
-          Hesabınız yok mu? Yöneticinizle iletişime geçin.
+          Don't have an account? Contact your administrator.
         </p>
       </div>
     </div>
